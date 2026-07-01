@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SDMon Public Demo Report</title>
+  <style>
+    body { margin: 0; background: #f6f8fb; color: #172033; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; padding: 32px; }
+    .hero, section { background: #fff; border: 1px solid #d8e1ee; border-radius: 10px; padding: 22px; margin-bottom: 18px; box-shadow: 0 1px 2px rgba(25,35,55,.04); }
+    .eyebrow { color: #2563eb; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 800; }
+    h1 { margin: 8px 0 0; font-size: 34px; }
+    h2 { margin: 0 0 14px; }
+    .sub { color: #5b6780; margin-top: 4px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .metric { background: #f8fafc; border: 1px solid #dbe5f2; border-radius: 8px; padding: 14px; }
+    .label { color: #63708a; text-transform: uppercase; font-size: 11px; letter-spacing: .8px; }
+    .value { font-size: 24px; font-weight: 800; margin-top: 4px; }
+    .good { color: #12805c; } .low { color: #2563eb; } .medium { color: #b45309; } .info { color: #596579; }
+    .risk { display: inline-block; min-width: 70px; font-weight: 800; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; border-bottom: 1px solid #e5ebf4; padding: 10px; }
+    th { background: #f8fafc; color: #4b5874; }
+    details.finding { border: 1px solid #dbe5f2; border-radius: 8px; padding: 12px; margin: 10px 0; background: #fff; }
+    .downloads a { display: inline-block; background: #2563eb; color: #fff; text-decoration: none; padding: 10px 14px; border-radius: 8px; margin-right: 8px; font-weight: 700; }
+    footer { color: #63708a; padding: 18px 0; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="hero">
+    <div class="eyebrow">SDMon Security Assessment</div>
+    <h1>SDMon Public Demo Report</h1>
+    <div class="sub">Synthetic demo data for Example Corp. No real endpoint data is included.</div>
+  </div>
+
+  <section>
+    <h2>Device</h2>
+    <div class="grid">
+      <div class="metric"><div class="label">Hostname</div><div class="value">demo-mac.local</div></div>
+      <div class="metric"><div class="label">Current User</div><div class="value">demo-user</div></div>
+      <div class="metric"><div class="label">Organization</div><div class="value">Example Corp</div></div>
+      <div class="metric"><div class="label">Version</div><div class="value">SDMon V2 RC1</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Executive Summary</h2>
+    <div class="grid5">
+      <div class="metric"><div class="label">Security Score</div><div class="value">82</div></div>
+      <div class="metric"><div class="label">Overall Health</div><div class="value good">Good</div></div>
+      <div class="metric"><div class="label">Overall Risk</div><div class="value low">Low</div></div>
+      <div class="metric"><div class="label">Total Events</div><div class="value">48</div></div>
+      <div class="metric"><div class="label">Matched Rules</div><div class="value">12</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Risk Distribution</h2>
+    <div class="grid">
+      <div class="metric"><div class="label">High Risk</div><div class="value">0</div></div>
+      <div class="metric"><div class="label">Medium Risk</div><div class="value medium">2</div></div>
+      <div class="metric"><div class="label">Low Risk</div><div class="value low">5</div></div>
+      <div class="metric"><div class="label">Info</div><div class="value info">5</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Top Findings</h2>
+    
+    <details class="finding" open>
+      <summary><span class="risk medium">Medium</span> <strong>Firewall disabled</strong></summary>
+      <p><strong>Reason:</strong> The macOS Application Firewall appears disabled in this synthetic example.</p>
+      <p><strong>Recommendation:</strong> Enable macOS Application Firewall.</p>
+      <p><strong>Technical Details:</strong> rule_id=macos_firewall_disabled_demo; evidence=Application Firewall status: disabled</p>
+    </details>
+    
+
+    <details class="finding" open>
+      <summary><span class="risk low">Low</span> <strong>User-writable LaunchAgent</strong></summary>
+      <p><strong>Reason:</strong> A LaunchAgent path is writable by the current demo user.</p>
+      <p><strong>Recommendation:</strong> Review LaunchAgent ownership and permissions.</p>
+      <p><strong>Technical Details:</strong> rule_id=launchagent_user_writable_demo; evidence=~/Library/LaunchAgents/example.agent.plist</p>
+    </details>
+    
+
+    <details class="finding" open>
+      <summary><span class="risk low">Low</span> <strong>Credential file permission review</strong></summary>
+      <p><strong>Reason:</strong> A credential-related configuration file should be reviewed for permissions.</p>
+      <p><strong>Recommendation:</strong> Confirm credential-related file permissions meet enterprise policy.</p>
+      <p><strong>Technical Details:</strong> rule_id=credential_permission_review_demo; evidence=~/Library/Application Support/ExampleApp/config.json</p>
+    </details>
+    
+
+    <details class="finding" open>
+      <summary><span class="risk info">Info</span> <strong>Browser extension review</strong></summary>
+      <p><strong>Reason:</strong> An installed browser extension requests capabilities that should be reviewed.</p>
+      <p><strong>Recommendation:</strong> Review installed browser extensions against the approved software list.</p>
+      <p><strong>Technical Details:</strong> rule_id=browser_extension_review_demo; evidence=Example Browser Extension</p>
+    </details>
+    
+
+    <details class="finding" open>
+      <summary><span class="risk info">Info</span> <strong>Sensitive file access review</strong></summary>
+      <p><strong>Reason:</strong> A sensitive local path appears in the synthetic timeline.</p>
+      <p><strong>Recommendation:</strong> Confirm access to sensitive local paths is expected.</p>
+      <p><strong>Technical Details:</strong> rule_id=sensitive_file_access_review_demo; evidence=/etc/hosts</p>
+    </details>
+    
+  </section>
+
+  <section>
+    <h2>Timeline</h2>
+    <table>
+      <thead><tr><th>Time</th><th>Category</th><th>Event</th><th>Target</th><th>Rule</th></tr></thead>
+      <tbody><tr><td>2026-01-01T10:00:01Z</td><td>system</td><td>System profile collected</td><td>demo-mac.local</td><td>system_profile_demo</td></tr>
+<tr><td>2026-01-01T10:00:04Z</td><td>persistence</td><td>LaunchAgent reviewed</td><td>~/Library/LaunchAgents/example.agent.plist</td><td>launchagent_user_writable_demo</td></tr>
+<tr><td>2026-01-01T10:00:08Z</td><td>credential</td><td>Credential-related file metadata reviewed</td><td>~/Library/Application Support/ExampleApp/config.json</td><td>credential_permission_review_demo</td></tr>
+<tr><td>2026-01-01T10:00:12Z</td><td>network</td><td>Example endpoint connection observed</td><td>198.51.100.10:443</td><td>network_endpoint_demo</td></tr>
+<tr><td>2026-01-01T10:00:16Z</td><td>network</td><td>Example management endpoint observed</td><td>192.0.2.10:7777</td><td>network_demo</td></tr>
+<tr><td>2026-01-01T10:00:20Z</td><td>application</td><td>Application inventory reviewed</td><td>ExampleAgent</td><td>application_inventory_demo</td></tr>
+<tr><td>2026-01-01T10:00:22Z</td><td>browser</td><td>Browser extension reviewed</td><td>Example Browser Extension</td><td>browser_extension_review_demo</td></tr>
+<tr><td>2026-01-01T10:00:25Z</td><td>security</td><td>Firewall status reviewed</td><td>macOS Application Firewall</td><td>macos_firewall_disabled_demo</td></tr>
+<tr><td>2026-01-01T10:00:29Z</td><td>file</td><td>Sensitive path reviewed</td><td>/etc/hosts</td><td>sensitive_file_access_review_demo</td></tr>
+<tr><td>2026-01-01T10:00:32Z</td><td>file</td><td>User document metadata reviewed</td><td>~/Documents/example.txt</td><td>file_metadata_demo</td></tr>
+<tr><td>2026-01-01T10:00:34Z</td><td>network</td><td>Documentation endpoint example observed</td><td>203.0.113.10:443</td><td>network_demo</td></tr>
+<tr><td>2026-01-01T10:00:35Z</td><td>ssh</td><td>SSH known hosts metadata reviewed</td><td>~/.ssh/known_hosts</td><td>ssh_metadata_demo</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="downloads">
+    <h2>Download</h2>
+    <a href="demo-report.html">HTML</a>
+    <a href="demo-report.pdf">PDF</a>
+    <a href="demo-report.csv">CSV</a>
+    <a href="demo-report.json">JSON</a>
+    <a href="demo-report.zip">ZIP</a>
+  </section>
+
+  <footer>Generated by SDMon - Public demo data only - 2026-01-01T10:00:00Z</footer>
+</main>
+</body>
+</html>

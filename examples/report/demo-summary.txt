@@ -1,0 +1,27 @@
+==============================
+SDMon Public Demo Report
+==============================
+Organization   : Example Corp
+Host Name      : demo-mac.local
+Current User   : demo-user
+Scan Time      : 2026-01-01T10:00:00Z
+Security Score : 82 /100
+Overall Health : Good
+Overall Risk   : Low
+Total Events   : 48
+Matched Rules  : 12
+
+Risk Distribution
+High   : 0
+Medium : 2
+Low    : 5
+Info   : 5
+
+Top Findings
+1. Firewall disabled | Risk: Medium | Recommendation: Enable macOS Application Firewall.
+2. User-writable LaunchAgent | Risk: Low | Recommendation: Review LaunchAgent ownership and permissions.
+3. Credential file permission review | Risk: Low | Recommendation: Confirm credential-related file permissions meet enterprise policy.
+4. Browser extension review | Risk: Info | Recommendation: Review installed browser extensions against the approved software list.
+5. Sensitive file access review | Risk: Info | Recommendation: Confirm access to sensitive local paths is expected.
+
+This report contains synthetic public demo data only.

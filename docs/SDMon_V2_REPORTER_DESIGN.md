@@ -579,7 +579,7 @@ V2 Reporter does not include:
 - Automatic email sending.
 - Automatic Slack sending.
 - Automatic Teams sending.
-- Automatic DingTalk sending.
+- Automatic enterprise chat sending.
 - Remote report hosting.
 - Hidden report transmission.
 

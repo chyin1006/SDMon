@@ -1,0 +1,7 @@
+type,title,risk,recommendation,evidence,rule_id
+summary,Security Score 82,Low,Review findings and validate policy alignment,Example Corp demo endpoint,summary
+finding,Firewall disabled,Medium,Enable macOS Application Firewall.,Application Firewall status: disabled,macos_firewall_disabled_demo
+finding,User-writable LaunchAgent,Low,Review LaunchAgent ownership and permissions.,~/Library/LaunchAgents/example.agent.plist,launchagent_user_writable_demo
+finding,Credential file permission review,Low,Confirm credential-related file permissions meet enterprise policy.,~/Library/Application Support/ExampleApp/config.json,credential_permission_review_demo
+finding,Browser extension review,Info,Review installed browser extensions against the approved software list.,Example Browser Extension,browser_extension_review_demo
+finding,Sensitive file access review,Info,Confirm access to sensitive local paths is expected.,/etc/hosts,sensitive_file_access_review_demo

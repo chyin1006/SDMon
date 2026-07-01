@@ -338,7 +338,7 @@ Phase 4: split analyzers
 Phase 5: add reusable profiles
 
 - Add generic enterprise agent and AI agent profile templates.
-- Add examples for Feilian, Flinco, EDR agents, and local AI agent processes when target details are known.
+- Add examples for enterprise VPN clients, EDR agents, and local AI agent processes when target details are known.
 - Keep all templates read-only and clearly marked as examples until validated.
 
 ## 10. V2 Development Milestones

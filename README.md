@@ -2,7 +2,7 @@
 
 Enterprise Security Assessment Toolkit
 
-Report screenshots are intentionally omitted from this clean public export until fully anonymized screenshots are prepared.
+![SDMon report home](docs/images/report-home.png)
 
 Generate enterprise-grade macOS endpoint security assessment reports with one command.
 
@@ -47,19 +47,25 @@ Terminal screenshot coming soon.
 
 ### Report Home
 
-Anonymized screenshot coming soon.
+![Report Home](docs/images/report-home.png)
 
 ### Executive Summary
 
-Anonymized screenshot coming soon.
+![Executive Summary](docs/images/report-pdf.png)
 
 ### Top Findings
 
-Anonymized screenshot coming soon.
+![Top Findings](docs/images/report-findings.png)
 
 ### Timeline
 
-Anonymized screenshot coming soon.
+![Timeline](docs/images/report-timeline.png)
+
+## Demo Artifacts
+
+- `examples/report/demo-report.html`
+- `examples/report/demo-report.pdf`
+- `examples/report/demo-report.zip`
 
 ## Features
 

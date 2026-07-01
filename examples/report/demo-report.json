@@ -1,0 +1,149 @@
+{
+  "TITLE": "SDMon Security Assessment",
+  "REPORT_TYPE": "Public Demo Report",
+  "ORGANIZATION": "Example Corp",
+  "HOSTNAME": "demo-mac.local",
+  "CURRENT_USER": "demo-user",
+  "SCAN_TIME": "2026-01-01T10:00:00Z",
+  "SDMON_VERSION": "SDMon V2 RC1",
+  "SECURITY_SCORE": 82,
+  "OVERALL_HEALTH": "Good",
+  "OVERALL_RISK": "Low",
+  "TOTAL_EVENTS": 48,
+  "MATCHED_RULES": 12,
+  "RISK_DISTRIBUTION": {
+    "HIGH": 0,
+    "MEDIUM": 2,
+    "LOW": 5,
+    "INFO": 5
+  },
+  "FINDINGS": [
+    {
+      "title": "Firewall disabled",
+      "risk": "Medium",
+      "rule_id": "macos_firewall_disabled_demo",
+      "reason": "The macOS Application Firewall appears disabled in this synthetic example.",
+      "recommendation": "Enable macOS Application Firewall.",
+      "evidence": "Application Firewall status: disabled"
+    },
+    {
+      "title": "User-writable LaunchAgent",
+      "risk": "Low",
+      "rule_id": "launchagent_user_writable_demo",
+      "reason": "A LaunchAgent path is writable by the current demo user.",
+      "recommendation": "Review LaunchAgent ownership and permissions.",
+      "evidence": "~/Library/LaunchAgents/example.agent.plist"
+    },
+    {
+      "title": "Credential file permission review",
+      "risk": "Low",
+      "rule_id": "credential_permission_review_demo",
+      "reason": "A credential-related configuration file should be reviewed for permissions.",
+      "recommendation": "Confirm credential-related file permissions meet enterprise policy.",
+      "evidence": "~/Library/Application Support/ExampleApp/config.json"
+    },
+    {
+      "title": "Browser extension review",
+      "risk": "Info",
+      "rule_id": "browser_extension_review_demo",
+      "reason": "An installed browser extension requests capabilities that should be reviewed.",
+      "recommendation": "Review installed browser extensions against the approved software list.",
+      "evidence": "Example Browser Extension"
+    },
+    {
+      "title": "Sensitive file access review",
+      "risk": "Info",
+      "rule_id": "sensitive_file_access_review_demo",
+      "reason": "A sensitive local path appears in the synthetic timeline.",
+      "recommendation": "Confirm access to sensitive local paths is expected.",
+      "evidence": "/etc/hosts"
+    }
+  ],
+  "TIMELINE": [
+    {
+      "time": "2026-01-01T10:00:01Z",
+      "category": "system",
+      "event": "System profile collected",
+      "target": "demo-mac.local",
+      "rule": "system_profile_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:04Z",
+      "category": "persistence",
+      "event": "LaunchAgent reviewed",
+      "target": "~/Library/LaunchAgents/example.agent.plist",
+      "rule": "launchagent_user_writable_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:08Z",
+      "category": "credential",
+      "event": "Credential-related file metadata reviewed",
+      "target": "~/Library/Application Support/ExampleApp/config.json",
+      "rule": "credential_permission_review_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:12Z",
+      "category": "network",
+      "event": "Example endpoint connection observed",
+      "target": "198.51.100.10:443",
+      "rule": "network_endpoint_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:16Z",
+      "category": "network",
+      "event": "Example management endpoint observed",
+      "target": "192.0.2.10:7777",
+      "rule": "network_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:20Z",
+      "category": "application",
+      "event": "Application inventory reviewed",
+      "target": "ExampleAgent",
+      "rule": "application_inventory_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:22Z",
+      "category": "browser",
+      "event": "Browser extension reviewed",
+      "target": "Example Browser Extension",
+      "rule": "browser_extension_review_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:25Z",
+      "category": "security",
+      "event": "Firewall status reviewed",
+      "target": "macOS Application Firewall",
+      "rule": "macos_firewall_disabled_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:29Z",
+      "category": "file",
+      "event": "Sensitive path reviewed",
+      "target": "/etc/hosts",
+      "rule": "sensitive_file_access_review_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:32Z",
+      "category": "file",
+      "event": "User document metadata reviewed",
+      "target": "~/Documents/example.txt",
+      "rule": "file_metadata_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:34Z",
+      "category": "network",
+      "event": "Documentation endpoint example observed",
+      "target": "203.0.113.10:443",
+      "rule": "network_demo"
+    },
+    {
+      "time": "2026-01-01T10:00:35Z",
+      "category": "ssh",
+      "event": "SSH known hosts metadata reviewed",
+      "target": "~/.ssh/known_hosts",
+      "rule": "ssh_metadata_demo"
+    }
+  ],
+  "NOTE": "Synthetic public demo data only. No real endpoint data is included."
+}
