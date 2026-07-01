@@ -1,0 +1,59 @@
+---
+name: Rule request
+description: Propose a new local review-only SDMon Rule
+title: "[Rule]: "
+labels: [rule]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        SDMon Rules must be local data only. Do not propose Rules that execute commands, stop Agents, delete files, upload data, or bypass security tools.
+  - type: input
+    id: rule_id
+    attributes:
+      label: Proposed RULE_ID
+      placeholder: process_example_behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Event category
+      options:
+        - process
+        - file
+        - network
+        - service
+        - system
+        - permission
+        - configuration
+        - security
+        - application
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Behavior to review
+      description: What local behavior should the Rule identify?
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested severity
+      options:
+        - info
+        - low
+        - medium
+        - high
+        - critical
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety notes
+      description: Confirm this Rule is review-only and does not perform remediation.
+    validations:
+      required: true

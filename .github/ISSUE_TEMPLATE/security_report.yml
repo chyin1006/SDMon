@@ -1,0 +1,42 @@
+---
+name: Security report
+description: Report a security concern in SDMon behavior or documentation
+title: "[Security]: "
+labels: [security]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, credentials, private keys, personal data, or sensitive production logs in public issues.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the security concern at a high level.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact area
+      options:
+        - Read-only boundary
+        - Local output boundary
+        - Data exposure
+        - Unsafe rule handling
+        - Unsafe template handling
+        - Misleading documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction or evidence
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: SDMon commit, macOS version, shell

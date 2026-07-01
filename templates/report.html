@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #6b778c;
+      --line: #dbe3ec;
+      --blue: #2563eb;
+      --green: #177245;
+      --amber: #b7791f;
+      --orange: #c05621;
+      --red: #c53030;
+    }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 40px; }
+    section, footer { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; margin-bottom: 18px; }
+    h1 { margin: 8px 0 0; font-size: 30px; }
+    h2 { margin: 0 0 14px; font-size: 20px; }
+    p { margin: 0; line-height: 1.55; }
+    .muted { color: var(--muted); }
+    .hero { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+    .logo { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue); }
+    .summary-box { margin-top: 14px; padding: 14px; border-left: 4px solid var(--blue); background: #f8fbff; }
+    .grid-4, .grid-5, .grid-3, .grid-2 { display: grid; gap: 14px; }
+    .grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .metric { border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #fbfcfe; min-height: 84px; }
+    .metric .label { font-size: 12px; color: var(--muted); text-transform: uppercase; }
+    .metric .value { margin-top: 8px; font-size: 24px; font-weight: 800; }
+    .health-excellent { color: var(--green); }
+    .health-good { color: var(--blue); }
+    .health-fair { color: var(--amber); }
+    .health-poor { color: var(--orange); }
+    .health-critical { color: var(--red); }
+    ul, ol { margin: 0; padding-left: 20px; }
+    li { margin: 0 0 10px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 14px; }
+    .download a { display: inline-block; margin: 0 10px 10px 0; padding: 10px 14px; border: 1px solid var(--blue); border-radius: 8px; background: var(--blue); color: #ffffff; font-weight: 700; text-decoration: none; }
+    .download a.secondary { background: #ffffff; color: var(--blue); }
+    .risk-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .risk-pill { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: #fbfcfe; font-weight: 700; }
+    details { margin-top: 10px; }
+    footer { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    @media print {
+      @page { size: A4 landscape; margin: 8mm; }
+      body { background: #ffffff; font-size: 9px; }
+      main { padding: 0; max-width: none; }
+      section, footer { break-inside: avoid; page-break-inside: avoid; box-shadow: none; margin-bottom: 5px; padding: 7px 9px; border-radius: 6px; }
+      h1 { font-size: 18px; margin-top: 3px; }
+      h2 { font-size: 11px; margin-bottom: 5px; }
+      p { line-height: 1.25; }
+      .hero { gap: 8px; }
+      .logo { font-size: 8px; }
+      .summary-box { margin-top: 6px; padding: 6px; }
+      .grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; gap: 5px; }
+      .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px; }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px; }
+      .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 5px; }
+      .metric { break-inside: avoid; page-break-inside: avoid; min-height: 34px; padding: 5px; border-radius: 6px; overflow-wrap: anywhere; }
+      .metric .label { font-size: 6.5px; line-height: 1.15; }
+      .metric .value { margin-top: 3px; font-size: 11px; line-height: 1.1; }
+      .risk-strip { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px; margin-top: 5px; }
+      .risk-pill { padding: 5px; border-radius: 6px; }
+      details { break-inside: avoid; page-break-inside: avoid; }
+      .timeline-section details { display: none; }
+      .timeline-section li:nth-child(n+11) { display: none; }
+      .download { page-break-before: always; }
+    }
+    @media (max-width: 940px) {
+      .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .risk-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section>
+      <div class="hero">
+        <div>
+          <div class="logo">SDMon Security Assessment</div>
+          <h1>{{TITLE}}</h1>
+          <p class="muted">Management View</p>
+        </div>
+        <div class="muted">
+          <div>Version: {{SDMON_VERSION}}</div>
+          <div>Scan Time: {{SCAN_TIME}}</div>
+          <div>Hostname: {{HOST_NAME}}</div>
+        </div>
+      </div>
+      <div class="summary-box">{{SUMMARY}}</div>
+    </section>
+
+    <section>
+      <h2>Device</h2>
+      <div class="grid-4">
+        <div class="metric"><div class="label">Hostname</div><div class="value">{{HOST_NAME}}</div></div>
+        <div class="metric"><div class="label">Current User</div><div class="value">{{CURRENT_USER}}</div></div>
+        <div class="metric"><div class="label">System Version</div><div class="value">{{SYSTEM_VERSION}}</div></div>
+        <div class="metric"><div class="label">macOS Version</div><div class="value">{{OS_VERSION}}</div></div>
+        <div class="metric"><div class="label">CPU</div><div class="value">{{CPU}}</div></div>
+        <div class="metric"><div class="label">Memory</div><div class="value">{{MEMORY}}</div></div>
+        <div class="metric"><div class="label">Scan Time</div><div class="value">{{SCAN_TIME}}</div></div>
+        <div class="metric"><div class="label">Elapsed</div><div class="value">{{ELAPSED_TIME}}</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Executive Summary</h2>
+      <div class="grid-5">
+        <div class="metric"><div class="label">Security Score</div><div class="value">{{SECURITY_SCORE}}</div></div>
+        <div class="metric"><div class="label">Overall Health</div><div class="value {{HEALTH_CLASS}}">{{OVERALL_HEALTH}}</div></div>
+        <div class="metric"><div class="label">Overall Risk</div><div class="value">{{OVERALL_RISK}}</div></div>
+        <div class="metric"><div class="label">Total Events</div><div class="value">{{TOTAL_EVENTS}}</div></div>
+        <div class="metric"><div class="label">Matched Rules</div><div class="value">{{RULES_MATCHED}}</div></div>
+        <div class="metric"><div class="label">AI Tools</div><div class="value">{{AI_TOOLS}}</div></div>
+        <div class="metric"><div class="label">Credential Findings</div><div class="value">{{CREDENTIAL_FINDINGS}}</div></div>
+        <div class="metric"><div class="label">Persistence Findings</div><div class="value">{{PERSISTENCE_FINDINGS}}</div></div>
+        <div class="metric"><div class="label">Network Findings</div><div class="value">{{NETWORK_FINDINGS}}</div></div>
+        <div class="metric"><div class="label">Sensitive File Findings</div><div class="value">{{SENSITIVE_FILE_FINDINGS}}</div></div>
+        <div class="metric"><div class="label">Browser Findings</div><div class="value">{{BROWSER_FINDINGS}}</div></div>
+      </div>
+      <div class="risk-strip">
+        <div class="risk-pill">High Risk: {{HIGH_RISK}}</div>
+        <div class="risk-pill">Medium Risk: {{MEDIUM_RISK}}</div>
+        <div class="risk-pill">Low Risk: {{LOW_RISK}}</div>
+        <div class="risk-pill">Info: {{INFO_RISK}}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Statistics</h2>
+      <div class="grid-4">
+        <div class="metric"><div class="label">Total Checks</div><div class="value">{{TOTAL_CHECKS}}</div></div>
+        <div class="metric"><div class="label">Passed</div><div class="value">{{PASSED_CHECKS}}</div></div>
+        <div class="metric"><div class="label">Warnings</div><div class="value">{{WARNING_CHECKS}}</div></div>
+        <div class="metric"><div class="label">Critical</div><div class="value">{{CRITICAL_CHECKS}}</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Security Score Breakdown</h2>
+      {{SCORE_REASONS_HTML}}
+    </section>
+
+    <section>
+      <h2>Top Findings</h2>
+      {{TOP_FINDINGS_HTML}}
+    </section>
+
+    <section>
+      <h2>Recommendations</h2>
+      {{RECOMMENDATIONS_HTML}}
+    </section>
+
+    <section>
+      <h2>Risk Distribution</h2>
+      <table>
+        <tr><th>Level</th><th>Count</th><th>Percent</th></tr>
+        <tr><td>Info</td><td>{{INFO_RISK}}</td><td>{{RISK_DISTRIBUTION_INFO}}%</td></tr>
+        <tr><td>Low</td><td>{{LOW_RISK}}</td><td>{{RISK_DISTRIBUTION_LOW}}%</td></tr>
+        <tr><td>Medium</td><td>{{MEDIUM_RISK}}</td><td>{{RISK_DISTRIBUTION_MEDIUM}}%</td></tr>
+        <tr><td>High</td><td>{{HIGH_RISK}}</td><td>{{RISK_DISTRIBUTION_HIGH}}%</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Credentials and Secrets</h2>
+      <p>{{CREDENTIAL_SUMMARY}}</p>
+      <details>
+        <summary>Technical Details</summary>
+        {{CREDENTIAL_ITEMS_HTML}}
+      </details>
+    </section>
+
+    <section class="timeline-section">
+      <h2>Timeline</h2>
+      <p class="muted">{{TIMELINE_NOTE}}</p>
+      {{TIMELINE_HTML}}
+    </section>
+
+    <section>
+      <h2>Technical Details</h2>
+      <details>
+        <summary>View all technical details</summary>
+        <div class="grid-3" style="margin-top: 12px;">
+          <div class="metric"><div class="label">Process Events</div><div class="value">{{PROCESS_EVENTS}}</div></div>
+          <div class="metric"><div class="label">Network Events</div><div class="value">{{NETWORK_EVENTS}}</div></div>
+          <div class="metric"><div class="label">Launchd Events</div><div class="value">{{LAUNCHD_EVENTS}}</div></div>
+          <div class="metric"><div class="label">SSH Key Events</div><div class="value">{{SSH_KEY_EVENTS}}</div></div>
+          <div class="metric"><div class="label">Sensitive File Events</div><div class="value">{{SENSITIVE_FILE_EVENTS}}</div></div>
+          <div class="metric"><div class="label">Credential Events</div><div class="value">{{CREDENTIAL_EVENTS}}</div></div>
+          <div class="metric"><div class="label">Rules Loaded</div><div class="value">{{RULES_LOADED}}</div></div>
+          <div class="metric"><div class="label">Rules Evaluated</div><div class="value">{{RULES_EVALUATED}}</div></div>
+          <div class="metric"><div class="label">Matched Rules</div><div class="value">{{RULES_MATCHED}}</div></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="download">
+      <h2>Download</h2>
+      <a href="report.html">Download HTML</a>
+      <a href="report.pdf">Download PDF</a>
+      <a class="secondary" href="report.csv">Download CSV</a>
+      <a class="secondary" href="report.json">Download JSON</a>
+      <a class="secondary" href="report.zip">Download ZIP</a>
+    </section>
+
+    <footer>
+      <div>Generated by SDMon</div>
+      <div>{{SDMON_VERSION}} | {{HOST_NAME}} | {{SCAN_TIME}}</div>
+    </footer>
+  </main>
+</body>
+</html>

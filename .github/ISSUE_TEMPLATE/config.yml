@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: SDMon Security Policy
+    url: https://github.com/chyin1006/SDMon/blob/main/SECURITY.md
+    about: Please read the security policy before reporting sensitive issues.

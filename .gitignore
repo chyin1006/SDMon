@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# SDMon output
+output/
+outputs/
+logs/
+pcap/
+*.pcapng
+*.log
+*.pcap
+*.zip
+*.tmp
+*.bak
