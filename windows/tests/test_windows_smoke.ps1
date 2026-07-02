@@ -62,6 +62,11 @@ Get-Content -LiteralPath (Join-Path $outputPath "report.json") -Raw | ConvertFro
 Get-Content -LiteralPath (Join-Path $outputPath "events.json") -Raw | ConvertFrom-Json | Out-Null
 Get-Content -LiteralPath (Join-Path $outputPath "timeline.json") -Raw | ConvertFrom-Json | Out-Null
 
+$summaryText = Get-Content -LiteralPath (Join-Path $outputPath "summary.txt") -Raw
+if ($summaryText -notmatch "Collector Summary") {
+    throw "summary.txt did not contain Collector Summary."
+}
+
 $noFindingOutputPath = Join-Path ([System.IO.Path]::GetTempPath()) ("sdmon-windows-no-finding-" + [guid]::NewGuid().ToString())
 
 . (Join-Path $WindowsRoot "runtime\event_writer.ps1")
@@ -117,6 +122,9 @@ if ($noFindingSummary -notmatch "Overall Risk   : Low") {
 }
 if ($noFindingSummary -notmatch "Matched Rules  : 0") {
     throw "No-finding summary did not contain Matched Rules 0."
+}
+if ($noFindingSummary -notmatch "Collector Summary") {
+    throw "No-finding summary did not contain Collector Summary."
 }
 
 $minimalOutputPath = Join-Path ([System.IO.Path]::GetTempPath()) ("sdmon-windows-minimal-" + [guid]::NewGuid().ToString())

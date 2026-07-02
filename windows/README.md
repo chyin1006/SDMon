@@ -53,6 +53,10 @@ output\
   timeline.json
 ```
 
+The HTML report is summarized for human readability. It includes collector counts, focused findings, capped timeline rows, and sampled technical details.
+
+The full raw event data remains available in `events.json` and `timeline.json`. Machine-readable report data remains available in `report.json`.
+
 ## Current Collectors
 
 Windows Beta 01 currently includes read-only collectors for:

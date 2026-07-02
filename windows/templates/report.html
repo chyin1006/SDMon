@@ -79,6 +79,18 @@
       background: #f8fafc;
       color: #4b5874;
     }
+    .note {
+      background: #eef5ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      color: #24456f;
+      margin: 0 0 14px;
+      padding: 10px 12px;
+    }
+    .notes {
+      color: #4b5874;
+      margin-top: 0;
+    }
     details {
       margin-top: 8px;
     }
@@ -129,6 +141,14 @@
   </section>
 
   <section>
+    <h2>Collector Summary</h2>
+    <table>
+      <thead><tr><th>Category</th><th>Events</th></tr></thead>
+      <tbody>{{COLLECTOR_ROWS}}</tbody>
+    </table>
+  </section>
+
+  <section>
     <h2>Permission Warnings</h2>
     <table>
       <thead><tr><th>Time</th><th>Category</th><th>Target</th><th>Message</th></tr></thead>
@@ -138,6 +158,7 @@
 
   <section>
     <h2>Timeline</h2>
+    <p class="note">{{TIMELINE_NOTE}}</p>
     <table>
       <thead><tr><th>Time</th><th>Category</th><th>Action</th><th>Target</th><th>Risk</th><th>Message</th></tr></thead>
       <tbody>{{TIMELINE_ROWS}}</tbody>
@@ -148,6 +169,8 @@
     <h2>Technical Details</h2>
     <details>
       <summary>View collected event summary</summary>
+      <p class="note">HTML technical details are sampled for readability. Full raw event data is available in events.json and timeline.json.</p>
+      {{TECHNICAL_NOTES}}
       <table>
         <thead><tr><th>Time</th><th>Category</th><th>Type</th><th>Action</th><th>Target</th><th>Risk</th><th>Message</th></tr></thead>
         <tbody>{{TECHNICAL_ROWS}}</tbody>

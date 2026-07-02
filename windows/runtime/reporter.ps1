@@ -107,6 +107,124 @@ function New-SDMonMetricCards {
     return ($cards -join "`n")
 }
 
+function Get-SDMonCollectorCategories {
+    return @(
+        "system",
+        "security",
+        "startup",
+        "browser",
+        "process",
+        "network",
+        "service",
+        "scheduled_task",
+        "credential_metadata",
+        "event_log"
+    )
+}
+
+function Get-SDMonCollectorSummary {
+    param([AllowNull()][AllowEmptyCollection()][array]$Events)
+
+    $safeEvents = @(ConvertTo-SDMonArray -Value $Events)
+    $rows = New-Object System.Collections.ArrayList
+
+    foreach ($category in Get-SDMonCollectorCategories) {
+        $count = Get-SDMonCount -Value @($safeEvents | Where-Object {
+            (Get-SDMonValue -SourceObject $_ -Name "category" -Default "") -eq $category
+        })
+
+        [void]$rows.Add([PSCustomObject]@{
+            category = $category
+            events   = $count
+        })
+    }
+
+    return @($rows.ToArray())
+}
+
+function Get-SDMonTimelineDisplayRows {
+    param([AllowNull()][AllowEmptyCollection()][array]$Timeline)
+
+    $safeTimeline = @(ConvertTo-SDMonArray -Value $Timeline)
+    $selected = New-Object System.Collections.ArrayList
+    $infoCount = 0
+    $maxInfo = 100
+
+    foreach ($entry in $safeTimeline) {
+        $severity = [string](Get-SDMonValue -SourceObject $entry -Name "severity" -Default "Info")
+        if ($severity -in @("High", "Medium", "Low")) {
+            [void]$selected.Add($entry)
+            continue
+        }
+
+        if ($severity -eq "Info" -and $infoCount -lt $maxInfo) {
+            [void]$selected.Add($entry)
+            $infoCount += 1
+        }
+    }
+
+    return @($selected.ToArray() | Sort-Object {
+        Get-SDMonValue -SourceObject $_ -Name "time" -Default ""
+    })
+}
+
+function Get-SDMonTechnicalDisplayRows {
+    param([AllowNull()][AllowEmptyCollection()][array]$Events)
+
+    $safeEvents = @(ConvertTo-SDMonArray -Value $Events)
+    $rows = New-Object System.Collections.ArrayList
+    $notes = New-Object System.Collections.ArrayList
+    $cap = 50
+    $cappedCategories = @(
+        "process",
+        "network",
+        "service",
+        "scheduled_task",
+        "browser",
+        "credential_metadata",
+        "event_log"
+    )
+
+    foreach ($category in Get-SDMonCollectorCategories) {
+        $categoryEvents = @($safeEvents | Where-Object {
+            (Get-SDMonValue -SourceObject $_ -Name "category" -Default "") -eq $category
+        })
+
+        if ($cappedCategories -contains $category) {
+            $displayEvents = @($categoryEvents | Select-Object -First $cap)
+            if ((Get-SDMonCount -Value $categoryEvents) -gt $cap) {
+                [void]$notes.Add(("Showing first {0} of {1} {2} events. Full data is available in events.json." -f $cap, (Get-SDMonCount -Value $categoryEvents), $category))
+            }
+        } else {
+            $displayEvents = $categoryEvents
+        }
+
+        foreach ($event in $displayEvents) {
+            [void]$rows.Add($event)
+        }
+    }
+
+    [PSCustomObject]@{
+        rows  = @($rows.ToArray())
+        notes = @($notes.ToArray())
+    }
+}
+
+function New-SDMonHtmlNotes {
+    param([AllowNull()][AllowEmptyCollection()][array]$Notes)
+
+    $safeNotes = @(ConvertTo-SDMonArray -Value $Notes)
+    if ((Get-SDMonCount -Value $safeNotes) -eq 0) {
+        return ""
+    }
+
+    $items = foreach ($note in $safeNotes) {
+        "<li>{0}</li>" -f (ConvertTo-SDMonHtml $note)
+    }
+
+    return "<ul class=`"notes`">$($items -join "")</ul>"
+}
+
 function Invoke-SDMonReporter {
     param(
         [Parameter(Mandatory = $true)][string]$OutputPath,
@@ -146,6 +264,7 @@ function Invoke-SDMonReporter {
     $totalEvents = Get-SDMonValue -SourceObject $Analysis -Name "total_events" -Default $defaultTotalEvents
     $matchedRules = Get-SDMonValue -SourceObject $Analysis -Name "matched_rules" -Default $defaultMatchedRules
     $generatedAt = Get-SDMonValue -SourceObject $Analysis -Name "generated_at" -Default $defaultGeneratedAt
+    $collectorSummary = Get-SDMonCollectorSummary -Events $safeEvents
 
     Write-SDMonJsonFile -Data $analysisTimeline -Path $timelinePath
     Write-SDMonJsonFile -Data $Analysis -Path $reportJsonPath
@@ -178,6 +297,10 @@ function Invoke-SDMonReporter {
         $findingLines = @("No findings.")
     }
 
+    $collectorLines = @($collectorSummary | ForEach-Object {
+        "- {0}: {1}" -f (Get-SDMonValue -SourceObject $_ -Name "category" -Default ""), (Get-SDMonValue -SourceObject $_ -Name "events" -Default 0)
+    })
+
     $summary = @(
         "==============================",
         "SDMon Windows Endpoint Assessment",
@@ -193,6 +316,9 @@ function Invoke-SDMonReporter {
         "CSV     : $reportCsvPath",
         "Summary : $summaryPath",
         "ZIP     : $zipPath",
+        "",
+        "Collector Summary",
+        ($collectorLines -join "`n"),
         "",
         "Findings",
         ($findingLines -join "`n")
@@ -226,9 +352,14 @@ function Invoke-SDMonReporter {
     }
 
     $findingRows = New-SDMonHtmlRows -Rows $topFindings -Columns @("severity", "title", "target", "recommendation")
+    $collectorRows = New-SDMonHtmlRows -Rows $collectorSummary -Columns @("category", "events")
     $permissionRows = New-SDMonHtmlRows -Rows $permissionWarnings -Columns @("event_time", "category", "target", "message")
-    $timelineRows = New-SDMonHtmlRows -Rows $analysisTimeline -Columns @("time", "category", "action", "target", "severity", "message")
-    $technicalRows = New-SDMonHtmlRows -Rows $safeEvents -Columns @("event_time", "category", "type", "action", "target", "severity", "message")
+    $displayTimeline = Get-SDMonTimelineDisplayRows -Timeline $analysisTimeline
+    $timelineRows = New-SDMonHtmlRows -Rows $displayTimeline -Columns @("time", "category", "action", "target", "severity", "message")
+    $timelineNote = "Showing {0} of {1} timeline entries. Full raw event data is available in events.json and timeline.json." -f (Get-SDMonCount -Value $displayTimeline), (Get-SDMonCount -Value $analysisTimeline)
+    $technicalDisplay = Get-SDMonTechnicalDisplayRows -Events $safeEvents
+    $technicalRows = New-SDMonHtmlRows -Rows $technicalDisplay.rows -Columns @("event_time", "category", "type", "action", "target", "severity", "message")
+    $technicalNotes = New-SDMonHtmlNotes -Notes $technicalDisplay.notes
 
     $deductions = if ((Get-SDMonCount -Value $deductionsList) -gt 0) {
         "<ul>" + (($deductionsList | ForEach-Object { "<li>{0}</li>" -f (ConvertTo-SDMonHtml $_) }) -join "") + "</ul>"
@@ -245,8 +376,11 @@ function Invoke-SDMonReporter {
         Replace("{{RISK_CARDS}}", (New-SDMonMetricCards -Metrics $riskMetrics)).
         Replace("{{SCORE_BREAKDOWN}}", $deductions).
         Replace("{{FINDING_ROWS}}", $findingRows).
+        Replace("{{COLLECTOR_ROWS}}", $collectorRows).
         Replace("{{PERMISSION_ROWS}}", $permissionRows).
+        Replace("{{TIMELINE_NOTE}}", (ConvertTo-SDMonHtml $timelineNote)).
         Replace("{{TIMELINE_ROWS}}", $timelineRows).
+        Replace("{{TECHNICAL_NOTES}}", $technicalNotes).
         Replace("{{TECHNICAL_ROWS}}", $technicalRows)
 
     Set-Content -LiteralPath $reportHtmlPath -Value $html -Encoding UTF8
