@@ -97,5 +97,26 @@ if ($noFindingSummary -notmatch "Matched Rules  : 0") {
     throw "No-finding summary did not contain Matched Rules 0."
 }
 
+$minimalOutputPath = Join-Path ([System.IO.Path]::GetTempPath()) ("sdmon-windows-minimal-" + [guid]::NewGuid().ToString())
+$minimalAnalysis = [PSCustomObject]@{
+    security_score = 100
+    overall_risk   = "Low"
+    matched_rules  = 0
+}
+
+Invoke-SDMonReporter -OutputPath $minimalOutputPath -Events $null -Analysis $minimalAnalysis -TemplatePath $TemplatePath | Out-Null
+
+foreach ($name in $expectedOutputs) {
+    $path = Join-Path $minimalOutputPath $name
+    if (-not (Test-Path -LiteralPath $path)) {
+        throw "Expected minimal-analysis output missing: $path"
+    }
+}
+
+$minimalHtml = Get-Content -LiteralPath (Join-Path $minimalOutputPath "report.html") -Raw
+if ($minimalHtml -notmatch "Unknown") {
+    throw "Minimal-analysis report did not render safe default values."
+}
+
 Write-Host "PASS"
 Write-Host ("Output: {0}" -f $outputPath)

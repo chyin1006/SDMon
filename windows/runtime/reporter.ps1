@@ -47,15 +47,31 @@ function Get-SDMonArrayValue {
     )
 
     $value = Get-SDMonValue -SourceObject $SourceObject -Name $Name -Default @()
+    ConvertTo-SDMonArray -Value $value
+}
+
+function ConvertTo-SDMonArray {
+    param([AllowNull()][object]$Value)
+
     if ($null -eq $value) {
-        return @()
+        return
     }
 
-    if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string]) -and -not ($value -is [System.Collections.IDictionary])) {
-        return @($value) | Where-Object { $null -ne $_ }
+    if ($Value -is [System.Collections.IEnumerable] -and -not ($Value -is [string]) -and -not ($Value -is [System.Collections.IDictionary])) {
+        foreach ($item in $Value) {
+            if ($null -ne $item) {
+                $item
+            }
+        }
+        return
     }
 
-    return @($value) | Where-Object { $null -ne $_ }
+    $Value
+}
+
+function Get-SDMonCount {
+    param([AllowNull()][object]$Value)
+    return @(ConvertTo-SDMonArray -Value $Value).Count
 }
 
 function New-SDMonHtmlRows {
@@ -64,13 +80,16 @@ function New-SDMonHtmlRows {
         [Parameter(Mandatory = $true)][string[]]$Columns
     )
 
-    if (-not $Rows -or $Rows.Count -eq 0) {
-        return "<tr><td colspan=`"$($Columns.Count)`">No items found.</td></tr>"
+    $safeRows = @(ConvertTo-SDMonArray -Value $Rows)
+    $safeColumns = @(ConvertTo-SDMonArray -Value $Columns)
+
+    if ((Get-SDMonCount -Value $safeRows) -eq 0) {
+        return "<tr><td colspan=`"$(Get-SDMonCount -Value $safeColumns)`">No items found.</td></tr>"
     }
 
     $htmlRows = New-Object System.Collections.ArrayList
-    foreach ($row in $Rows) {
-        $cells = foreach ($column in $Columns) {
+    foreach ($row in $safeRows) {
+        $cells = foreach ($column in $safeColumns) {
             "<td>{0}</td>" -f (ConvertTo-SDMonHtml (Get-SDMonValue -SourceObject $row -Name $column -Default ""))
         }
         [void]$htmlRows.Add("<tr>{0}</tr>" -f ($cells -join ""))
@@ -108,16 +127,18 @@ function Invoke-SDMonReporter {
     $reportHtmlPath = Join-Path $OutputPath "report.html"
     $zipPath = Join-Path $OutputPath "report.zip"
 
-    Write-SDMonJsonFile -Data $Events -Path $eventsPath
-    $analysisTimeline = Get-SDMonArrayValue -SourceObject $Analysis -Name "timeline"
-    $topFindings = Get-SDMonArrayValue -SourceObject $Analysis -Name "top_findings"
-    $permissionWarnings = Get-SDMonArrayValue -SourceObject $Analysis -Name "permission_warnings"
-    $deductionsList = Get-SDMonArrayValue -SourceObject $Analysis -Name "deductions"
+    $safeEvents = @(ConvertTo-SDMonArray -Value $Events)
+    $analysisTimeline = @(Get-SDMonArrayValue -SourceObject $Analysis -Name "timeline")
+    $topFindings = @(Get-SDMonArrayValue -SourceObject $Analysis -Name "top_findings")
+    $permissionWarnings = @(Get-SDMonArrayValue -SourceObject $Analysis -Name "permission_warnings")
+    $deductionsList = @(Get-SDMonArrayValue -SourceObject $Analysis -Name "deductions")
     $riskDistribution = Get-SDMonValue -SourceObject $Analysis -Name "risk_distribution" -Default @{}
     $device = Get-SDMonValue -SourceObject $Analysis -Name "device" -Default @{}
 
-    $defaultTotalEvents = @($Events).Count
-    $defaultMatchedRules = @($topFindings).Count
+    Write-SDMonJsonFile -Data $safeEvents -Path $eventsPath
+
+    $defaultTotalEvents = Get-SDMonCount -Value $safeEvents
+    $defaultMatchedRules = Get-SDMonCount -Value $topFindings
     $defaultGeneratedAt = (Get-Date).ToUniversalTime().ToString("o")
 
     $securityScore = Get-SDMonValue -SourceObject $Analysis -Name "security_score" -Default 100
@@ -153,7 +174,7 @@ function Invoke-SDMonReporter {
     $findingLines = @($topFindings | ForEach-Object {
         "- {0} | {1} | {2}" -f (Get-SDMonValue -SourceObject $_ -Name "severity" -Default ""), (Get-SDMonValue -SourceObject $_ -Name "title" -Default ""), (Get-SDMonValue -SourceObject $_ -Name "target" -Default "")
     })
-    if ($findingLines.Count -eq 0) {
+    if ((Get-SDMonCount -Value $findingLines) -eq 0) {
         $findingLines = @("No findings.")
     }
 
@@ -207,9 +228,9 @@ function Invoke-SDMonReporter {
     $findingRows = New-SDMonHtmlRows -Rows $topFindings -Columns @("severity", "title", "target", "recommendation")
     $permissionRows = New-SDMonHtmlRows -Rows $permissionWarnings -Columns @("event_time", "category", "target", "message")
     $timelineRows = New-SDMonHtmlRows -Rows $analysisTimeline -Columns @("time", "category", "action", "target", "severity", "message")
-    $technicalRows = New-SDMonHtmlRows -Rows $Events -Columns @("event_time", "category", "type", "action", "target", "severity")
+    $technicalRows = New-SDMonHtmlRows -Rows $safeEvents -Columns @("event_time", "category", "type", "action", "target", "severity")
 
-    $deductions = if ($deductionsList.Count -gt 0) {
+    $deductions = if ((Get-SDMonCount -Value $deductionsList) -gt 0) {
         "<ul>" + (($deductionsList | ForEach-Object { "<li>{0}</li>" -f (ConvertTo-SDMonHtml $_) }) -join "") + "</ul>"
     } else {
         "<p>No score deductions.</p>"

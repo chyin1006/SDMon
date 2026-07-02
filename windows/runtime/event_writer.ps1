@@ -39,7 +39,8 @@ function Write-SDMonJsonFile {
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
     }
 
-    $isEmptyCollection = ($null -ne $Data -and $Data -is [System.Collections.ICollection] -and -not ($Data -is [string]) -and $Data.Count -eq 0)
+    $dataItems = @($Data)
+    $isEmptyCollection = ($null -ne $Data -and $Data -is [System.Collections.ICollection] -and -not ($Data -is [string]) -and -not ($Data -is [System.Collections.IDictionary]) -and $dataItems.Count -eq 0)
     if ($isEmptyCollection) {
         Set-Content -LiteralPath $Path -Value "[]" -Encoding UTF8
         return
