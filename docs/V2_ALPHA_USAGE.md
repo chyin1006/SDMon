@@ -1,24 +1,56 @@
-# SDMon V2 Alpha Usage
+# SDMon V2 RC1 Usage
 
-## 1. V2 Alpha Current Status
+## 1. V2 RC1 Current Status
 
-SDMon V2 Alpha Preview is an early runnable framework preview for macOS.
+SDMon V2 RC1 Public Preview is a runnable macOS-first endpoint security assessment toolkit.
 
-This is a release candidate for the Alpha Preview experience. It is not a stable release.
+This is a public preview release designed for evaluation. It is not a stable enterprise deployment release.
 
-It provides a minimal end-to-end local pipeline for collecting macOS events, matching demo rules, analyzing results, and generating reports.
+It provides a local, read-only pipeline for collecting macOS endpoint signals, matching rules, analyzing results, and generating enterprise-style reports.
 
-One command to collect local agent behavior signals and generate a local HTML/JSON/CSV report.
+One command collects local endpoint security signals and generates local HTML, PDF, ZIP, JSON, CSV, and text reports.
 
-V2 Alpha is not a replacement for V1.1. V1.1 files and command entry points remain unchanged.
+The public `v2.0.0-rc1` release currently supports macOS. Windows support is under Beta development in a separate branch and pull request, and is not part of RC1 yet.
 
-## 2. Quick Start
+## 2. Before You Start
 
-Run SDMon V2 Alpha Preview in about 5 minutes:
+If you use `git clone` on a fresh Mac, macOS may ask you to install Apple Command Line Tools first:
+
+```bash
+xcode-select --install
+```
+
+After installation, verify Git is available:
+
+```bash
+git --version
+```
+
+## 3. Quick Start
+
+Run SDMon V2 RC1 Public Preview in about 5 minutes.
+
+### Option 1: Run With Git
 
 ```bash
 git clone https://github.com/chyin1006/SDMon.git
 cd SDMon
+chmod +x sdmon-v2.sh
+./sdmon-v2.sh
+```
+
+### Option 2: Run From GitHub ZIP
+
+Use this option if Git is not installed yet.
+
+1. Open the SDMon GitHub page.
+2. Select **Code** -> **Download ZIP**.
+3. Extract the ZIP file.
+4. Open Terminal in the extracted folder.
+5. Run:
+
+```bash
+chmod +x sdmon-v2.sh
 ./sdmon-v2.sh
 ```
 
@@ -28,6 +60,8 @@ Expected report files:
 
 ```text
 output/report.html
+output/report.pdf
+output/report.zip
 output/report.json
 output/report.csv
 output/summary.txt
@@ -35,17 +69,17 @@ output/timeline.json
 output/events.json
 ```
 
-## 3. Supported Platform
+## 4. Supported Platform
 
 Current support:
 
 - macOS
 
-Windows and Linux are planned for future versions, but they are not implemented in V2 Alpha.
+Windows and Linux are planned for future versions. Windows Beta work is being developed separately and is not included in `v2.0.0-rc1`.
 
-## 4. Current Capabilities
+## 5. Current Capabilities
 
-V2 Alpha currently includes:
+V2 RC1 currently includes:
 
 - Event Layer
 - Producer
@@ -55,7 +89,7 @@ V2 Alpha currently includes:
 - macOS Sensors
 - CLI Wrapper
 
-## 5. Output Directory
+## 6. Output Directory
 
 The default output directory is:
 
@@ -66,6 +100,8 @@ output/
 User-facing report files:
 
 - `output/report.html`
+- `output/report.pdf`
+- `output/report.zip`
 - `output/report.json`
 - `output/report.csv`
 - `output/summary.txt`
@@ -74,7 +110,7 @@ User-facing report files:
 
 Internal pipeline artifacts may also be kept under the selected output directory for troubleshooting.
 
-## 6. Open HTML Report
+## 7. Open HTML Report
 
 On macOS, SDMon automatically opens the generated HTML report:
 
@@ -88,9 +124,9 @@ You can still open it manually if needed:
 open output/report.html
 ```
 
-## 7. Write Your First Rule
+## 8. Write Your First Rule
 
-V2 Alpha rules live in `rules_v2/` and use Bash-friendly `.conf` files.
+V2 RC1 rules live in `rules_v2/` and use Bash-friendly `.conf` files.
 
 Start from the example rule:
 
@@ -99,7 +135,7 @@ cp examples/rules/first_process_rule.conf rules_v2/my_first_rule.conf
 ./sdmon-v2.sh
 ```
 
-Minimal Alpha-compatible rule fields:
+Minimal RC1-compatible rule fields:
 
 ```conf
 RULE_ID="example_process_start"
@@ -121,28 +157,28 @@ Rule safety rules:
 
 See `examples/README.md` for more detail.
 
-## 8. Current Limitations
+## 9. Current Limitations
 
-V2 Alpha limitations:
+V2 RC1 limitations:
 
-- Alpha stage.
+- Public preview stage.
 - Does not capture packets.
 - Does not modify the system.
 - Does not modify target Agents.
 - Does not replace EDR, MDM, or VPN products.
 
-## 9. Safety Notes
+## 10. Safety Notes
 
-V2 Alpha is designed for local, read-only monitoring:
+V2 RC1 is designed for local, read-only assessment:
 
 - Read-only collection.
 - Local output only.
 - No data upload.
 - No automatic remediation.
 
-## 10. Test Commands
+## 11. Test Commands
 
-Run the V2 Alpha pipeline test:
+Run the V2 pipeline test:
 
 ```bash
 bash tests/test_v2_alpha_pipeline.sh
@@ -154,7 +190,7 @@ Run the V2 CLI test:
 bash tests/test_sdmon_v2_cli.sh
 ```
 
-## 11. Next Steps
+## 12. Next Steps
 
 Planned next steps:
 

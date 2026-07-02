@@ -30,11 +30,46 @@ It collects endpoint behavior and configuration signals, runs local rule matchin
 
 SDMon does not block, remove, isolate, unload, modify, or remediate anything on the endpoint.
 
+## Before You Start
+
+SDMon `v2.0.0-rc1` currently supports macOS in the public release.
+
+Windows support is under Beta development in a separate branch and pull request. It is not part of the `v2.0.0-rc1` public preview release yet.
+
+If you use `git clone` on a fresh Mac, macOS may ask you to install Apple Command Line Tools first:
+
+```bash
+xcode-select --install
+```
+
+After installation, verify Git is available:
+
+```bash
+git --version
+```
+
 ## Quick Start
+
+### Option 1: Run With Git
 
 ```bash
 git clone https://github.com/chyin1006/SDMon.git
 cd SDMon
+chmod +x sdmon-v2.sh
+./sdmon-v2.sh
+```
+
+### Option 2: Run From GitHub ZIP
+
+Use this option if Git is not installed yet.
+
+1. Open the SDMon GitHub page.
+2. Select **Code** -> **Download ZIP**.
+3. Extract the ZIP file.
+4. Open Terminal in the extracted folder.
+5. Run:
+
+```bash
 chmod +x sdmon-v2.sh
 ./sdmon-v2.sh
 ```
