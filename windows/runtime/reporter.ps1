@@ -7,7 +7,7 @@ function ConvertTo-SDMonHtml {
 
 function New-SDMonHtmlRows {
     param(
-        [Parameter(Mandatory = $true)][array]$Rows,
+        [AllowNull()][AllowEmptyCollection()][array]$Rows,
         [Parameter(Mandatory = $true)][string[]]$Columns
     )
 
@@ -38,7 +38,7 @@ function New-SDMonMetricCards {
 function Invoke-SDMonReporter {
     param(
         [Parameter(Mandatory = $true)][string]$OutputPath,
-        [Parameter(Mandatory = $true)][array]$Events,
+        [AllowNull()][AllowEmptyCollection()][array]$Events,
         [Parameter(Mandatory = $true)]$Analysis,
         [Parameter(Mandatory = $true)][string]$TemplatePath
     )
@@ -80,6 +80,11 @@ function Invoke-SDMonReporter {
     }
     $csvRows | Export-Csv -LiteralPath $reportCsvPath -NoTypeInformation -Encoding UTF8
 
+    $findingLines = @($Analysis.top_findings | ForEach-Object { "- $($_.severity) | $($_.title) | $($_.target)" })
+    if ($findingLines.Count -eq 0) {
+        $findingLines = @("No findings.")
+    }
+
     $summary = @(
         "==============================",
         "SDMon Windows Endpoint Assessment",
@@ -97,7 +102,7 @@ function Invoke-SDMonReporter {
         "ZIP     : $zipPath",
         "",
         "Findings",
-        (($Analysis.top_findings | ForEach-Object { "- $($_.severity) | $($_.title) | $($_.target)" }) -join "`n")
+        ($findingLines -join "`n")
     ) -join "`n"
     Set-Content -LiteralPath $summaryPath -Value $summary -Encoding UTF8
 

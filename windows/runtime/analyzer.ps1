@@ -2,7 +2,7 @@ Set-StrictMode -Version 3.0
 
 function Add-SDMonFinding {
     param(
-        [Parameter(Mandatory = $true)][System.Collections.ArrayList]$Findings,
+        [System.Collections.ArrayList]$Findings,
         [Parameter(Mandatory = $true)]$Event
     )
 
@@ -29,15 +29,16 @@ function Get-SDMonRiskFromScore {
 
 function Invoke-SDMonAnalyzer {
     param(
-        [Parameter(Mandatory = $true)][array]$Events
+        [AllowNull()][AllowEmptyCollection()][array]$Events
     )
 
+    $eventList = @($Events) | Where-Object { $null -ne $_ }
     $score = 100
     $deductions = New-Object System.Collections.ArrayList
     $findings = New-Object System.Collections.ArrayList
     $deductionApplied = @{}
 
-    foreach ($event in $Events) {
+    foreach ($event in $eventList) {
         if ($event.severity -in @("Medium", "Low")) {
             Add-SDMonFinding -Findings $findings -Event $event
         }
@@ -77,10 +78,10 @@ function Invoke-SDMonAnalyzer {
         $score = 0
     }
 
-    $deviceEvent = $Events | Where-Object { $_.category -eq "system" -and $_.type -eq "system_summary" } | Select-Object -First 1
+    $deviceEvent = $eventList | Where-Object { $_.category -eq "system" -and $_.type -eq "system_summary" } | Select-Object -First 1
     $device = if ($deviceEvent) { $deviceEvent.details } else { @{} }
 
-    $timeline = $Events | Sort-Object event_time | ForEach-Object {
+    $timeline = @($eventList | Sort-Object event_time | ForEach-Object {
         [PSCustomObject]@{
             time     = $_.event_time
             category = $_.category
@@ -89,17 +90,17 @@ function Invoke-SDMonAnalyzer {
             severity = $_.severity
             message  = $_.message
         }
-    }
+    })
 
-    $permissionWarnings = $Events | Where-Object {
+    $permissionWarnings = @($eventList | Where-Object {
         $_.action -eq "permission_denied" -or $_.type -eq "permission_warning"
-    }
+    })
 
     $riskDistribution = [ordered]@{
-        High   = @($Events | Where-Object { $_.severity -eq "High" }).Count
-        Medium = @($Events | Where-Object { $_.severity -eq "Medium" }).Count
-        Low    = @($Events | Where-Object { $_.severity -eq "Low" }).Count
-        Info   = @($Events | Where-Object { $_.severity -eq "Info" }).Count
+        High   = @($eventList | Where-Object { $_.severity -eq "High" }).Count
+        Medium = @($eventList | Where-Object { $_.severity -eq "Medium" }).Count
+        Low    = @($eventList | Where-Object { $_.severity -eq "Low" }).Count
+        Info   = @($eventList | Where-Object { $_.severity -eq "Info" }).Count
     }
 
     [PSCustomObject]@{
@@ -107,7 +108,7 @@ function Invoke-SDMonAnalyzer {
         generated_at        = (Get-Date).ToUniversalTime().ToString("o")
         security_score      = [int]$score
         overall_risk        = (Get-SDMonRiskFromScore -Score $score)
-        total_events        = @($Events).Count
+        total_events        = @($eventList).Count
         matched_rules       = @($findings).Count
         risk_distribution   = $riskDistribution
         deductions          = @($deductions)

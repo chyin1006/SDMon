@@ -30,7 +30,7 @@ function New-SDMonEvent {
 
 function Write-SDMonJsonFile {
     param(
-        [Parameter(Mandatory = $true)]$Data,
+        [AllowNull()][AllowEmptyCollection()]$Data,
         [Parameter(Mandatory = $true)][string]$Path
     )
 
@@ -39,5 +39,11 @@ function Write-SDMonJsonFile {
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
     }
 
-    $Data | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $Path -Encoding UTF8
+    $isEmptyCollection = ($null -ne $Data -and $Data -is [System.Collections.ICollection] -and -not ($Data -is [string]) -and $Data.Count -eq 0)
+    if ($isEmptyCollection) {
+        Set-Content -LiteralPath $Path -Value "[]" -Encoding UTF8
+        return
+    }
+
+    ConvertTo-Json -InputObject $Data -Depth 12 | Set-Content -LiteralPath $Path -Encoding UTF8
 }

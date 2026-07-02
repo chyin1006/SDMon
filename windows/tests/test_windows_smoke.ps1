@@ -5,6 +5,7 @@ $TestRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $WindowsRoot = Split-Path -Parent $TestRoot
 $RepoRoot = Split-Path -Parent $WindowsRoot
 $ScriptPath = Join-Path $WindowsRoot "sdmon-windows.ps1"
+$TemplatePath = Join-Path $WindowsRoot "templates\report.html"
 
 $requiredFiles = @(
     $ScriptPath,
@@ -15,7 +16,7 @@ $requiredFiles = @(
     (Join-Path $WindowsRoot "runtime\event_writer.ps1"),
     (Join-Path $WindowsRoot "runtime\analyzer.ps1"),
     (Join-Path $WindowsRoot "runtime\reporter.ps1"),
-    (Join-Path $WindowsRoot "templates\report.html")
+    $TemplatePath
 )
 
 foreach ($file in $requiredFiles) {
@@ -54,6 +55,36 @@ foreach ($name in $expectedOutputs) {
 Get-Content -LiteralPath (Join-Path $outputPath "report.json") -Raw | ConvertFrom-Json | Out-Null
 Get-Content -LiteralPath (Join-Path $outputPath "events.json") -Raw | ConvertFrom-Json | Out-Null
 Get-Content -LiteralPath (Join-Path $outputPath "timeline.json") -Raw | ConvertFrom-Json | Out-Null
+
+$noFindingOutputPath = Join-Path ([System.IO.Path]::GetTempPath()) ("sdmon-windows-no-finding-" + [guid]::NewGuid().ToString())
+
+. (Join-Path $WindowsRoot "runtime\event_writer.ps1")
+. (Join-Path $WindowsRoot "runtime\analyzer.ps1")
+. (Join-Path $WindowsRoot "runtime\reporter.ps1")
+
+$noFindingAnalysis = Invoke-SDMonAnalyzer -Events @()
+if ($noFindingAnalysis.security_score -ne 100) {
+    throw "Expected no-finding security score 100, got $($noFindingAnalysis.security_score)"
+}
+if ($noFindingAnalysis.overall_risk -ne "Low") {
+    throw "Expected no-finding overall risk Low, got $($noFindingAnalysis.overall_risk)"
+}
+if ($noFindingAnalysis.matched_rules -ne 0) {
+    throw "Expected no-finding matched rules 0, got $($noFindingAnalysis.matched_rules)"
+}
+
+Invoke-SDMonReporter -OutputPath $noFindingOutputPath -Events @() -Analysis $noFindingAnalysis -TemplatePath $TemplatePath | Out-Null
+
+foreach ($name in $expectedOutputs) {
+    $path = Join-Path $noFindingOutputPath $name
+    if (-not (Test-Path -LiteralPath $path)) {
+        throw "Expected no-finding output missing: $path"
+    }
+}
+
+Get-Content -LiteralPath (Join-Path $noFindingOutputPath "report.json") -Raw | ConvertFrom-Json | Out-Null
+Get-Content -LiteralPath (Join-Path $noFindingOutputPath "events.json") -Raw | ConvertFrom-Json | Out-Null
+Get-Content -LiteralPath (Join-Path $noFindingOutputPath "timeline.json") -Raw | ConvertFrom-Json | Out-Null
 
 Write-Host "PASS"
 Write-Host ("Output: {0}" -f $outputPath)
