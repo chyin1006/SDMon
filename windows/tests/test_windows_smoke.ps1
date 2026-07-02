@@ -86,5 +86,16 @@ Get-Content -LiteralPath (Join-Path $noFindingOutputPath "report.json") -Raw | C
 Get-Content -LiteralPath (Join-Path $noFindingOutputPath "events.json") -Raw | ConvertFrom-Json | Out-Null
 Get-Content -LiteralPath (Join-Path $noFindingOutputPath "timeline.json") -Raw | ConvertFrom-Json | Out-Null
 
+$noFindingSummary = Get-Content -LiteralPath (Join-Path $noFindingOutputPath "summary.txt") -Raw
+if ($noFindingSummary -notmatch "Security Score : 100") {
+    throw "No-finding summary did not contain Security Score 100."
+}
+if ($noFindingSummary -notmatch "Overall Risk   : Low") {
+    throw "No-finding summary did not contain Overall Risk Low."
+}
+if ($noFindingSummary -notmatch "Matched Rules  : 0") {
+    throw "No-finding summary did not contain Matched Rules 0."
+}
+
 Write-Host "PASS"
 Write-Host ("Output: {0}" -f $outputPath)

@@ -5,6 +5,59 @@ function ConvertTo-SDMonHtml {
     return [System.Net.WebUtility]::HtmlEncode([string]$Value)
 }
 
+function Get-SDMonValue {
+    param(
+        [AllowNull()][object]$SourceObject,
+        [Parameter(Mandatory = $true)][string]$Name,
+        [AllowNull()][object]$Default = "Unknown"
+    )
+
+    if ($null -eq $SourceObject) {
+        return $Default
+    }
+
+    if ($SourceObject -is [System.Collections.IDictionary]) {
+        if (-not $SourceObject.Contains($Name)) {
+            return $Default
+        }
+        $value = $SourceObject[$Name]
+    } else {
+        $property = $SourceObject.PSObject.Properties[$Name]
+        if ($null -eq $property) {
+            return $Default
+        }
+        $value = $property.Value
+    }
+
+    if ($null -eq $value) {
+        return $Default
+    }
+
+    if ($value -is [string] -and [string]::IsNullOrWhiteSpace($value)) {
+        return $Default
+    }
+
+    return $value
+}
+
+function Get-SDMonArrayValue {
+    param(
+        [AllowNull()][object]$SourceObject,
+        [Parameter(Mandatory = $true)][string]$Name
+    )
+
+    $value = Get-SDMonValue -SourceObject $SourceObject -Name $Name -Default @()
+    if ($null -eq $value) {
+        return @()
+    }
+
+    if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string]) -and -not ($value -is [System.Collections.IDictionary])) {
+        return @($value) | Where-Object { $null -ne $_ }
+    }
+
+    return @($value) | Where-Object { $null -ne $_ }
+}
+
 function New-SDMonHtmlRows {
     param(
         [AllowNull()][AllowEmptyCollection()][array]$Rows,
@@ -18,7 +71,7 @@ function New-SDMonHtmlRows {
     $htmlRows = New-Object System.Collections.ArrayList
     foreach ($row in $Rows) {
         $cells = foreach ($column in $Columns) {
-            "<td>{0}</td>" -f (ConvertTo-SDMonHtml $row.$column)
+            "<td>{0}</td>" -f (ConvertTo-SDMonHtml (Get-SDMonValue -SourceObject $row -Name $column -Default ""))
         }
         [void]$htmlRows.Add("<tr>{0}</tr>" -f ($cells -join ""))
     }
@@ -56,31 +109,50 @@ function Invoke-SDMonReporter {
     $zipPath = Join-Path $OutputPath "report.zip"
 
     Write-SDMonJsonFile -Data $Events -Path $eventsPath
-    Write-SDMonJsonFile -Data $Analysis.timeline -Path $timelinePath
+    $analysisTimeline = Get-SDMonArrayValue -SourceObject $Analysis -Name "timeline"
+    $topFindings = Get-SDMonArrayValue -SourceObject $Analysis -Name "top_findings"
+    $permissionWarnings = Get-SDMonArrayValue -SourceObject $Analysis -Name "permission_warnings"
+    $deductionsList = Get-SDMonArrayValue -SourceObject $Analysis -Name "deductions"
+    $riskDistribution = Get-SDMonValue -SourceObject $Analysis -Name "risk_distribution" -Default @{}
+    $device = Get-SDMonValue -SourceObject $Analysis -Name "device" -Default @{}
+
+    $defaultTotalEvents = @($Events).Count
+    $defaultMatchedRules = @($topFindings).Count
+    $defaultGeneratedAt = (Get-Date).ToUniversalTime().ToString("o")
+
+    $securityScore = Get-SDMonValue -SourceObject $Analysis -Name "security_score" -Default 100
+    $overallRisk = Get-SDMonValue -SourceObject $Analysis -Name "overall_risk" -Default "Low"
+    $totalEvents = Get-SDMonValue -SourceObject $Analysis -Name "total_events" -Default $defaultTotalEvents
+    $matchedRules = Get-SDMonValue -SourceObject $Analysis -Name "matched_rules" -Default $defaultMatchedRules
+    $generatedAt = Get-SDMonValue -SourceObject $Analysis -Name "generated_at" -Default $defaultGeneratedAt
+
+    Write-SDMonJsonFile -Data $analysisTimeline -Path $timelinePath
     Write-SDMonJsonFile -Data $Analysis -Path $reportJsonPath
 
     $csvRows = New-Object System.Collections.ArrayList
     [void]$csvRows.Add([PSCustomObject]@{
         type = "summary"
         title = "Security Score"
-        severity = $Analysis.overall_risk
+        severity = $overallRisk
         target = "Windows endpoint"
         recommendation = "Review findings and permission warnings."
         event_id = ""
     })
-    foreach ($finding in $Analysis.top_findings) {
+    foreach ($finding in $topFindings) {
         [void]$csvRows.Add([PSCustomObject]@{
             type = "finding"
-            title = $finding.title
-            severity = $finding.severity
-            target = $finding.target
-            recommendation = $finding.recommendation
-            event_id = $finding.event_id
+            title = Get-SDMonValue -SourceObject $finding -Name "title" -Default ""
+            severity = Get-SDMonValue -SourceObject $finding -Name "severity" -Default ""
+            target = Get-SDMonValue -SourceObject $finding -Name "target" -Default ""
+            recommendation = Get-SDMonValue -SourceObject $finding -Name "recommendation" -Default ""
+            event_id = Get-SDMonValue -SourceObject $finding -Name "event_id" -Default ""
         })
     }
     $csvRows | Export-Csv -LiteralPath $reportCsvPath -NoTypeInformation -Encoding UTF8
 
-    $findingLines = @($Analysis.top_findings | ForEach-Object { "- $($_.severity) | $($_.title) | $($_.target)" })
+    $findingLines = @($topFindings | ForEach-Object {
+        "- {0} | {1} | {2}" -f (Get-SDMonValue -SourceObject $_ -Name "severity" -Default ""), (Get-SDMonValue -SourceObject $_ -Name "title" -Default ""), (Get-SDMonValue -SourceObject $_ -Name "target" -Default "")
+    })
     if ($findingLines.Count -eq 0) {
         $findingLines = @("No findings.")
     }
@@ -89,10 +161,10 @@ function Invoke-SDMonReporter {
         "==============================",
         "SDMon Windows Endpoint Assessment",
         "==============================",
-        "Security Score : $($Analysis.security_score)",
-        "Overall Risk   : $($Analysis.overall_risk)",
-        "Total Events   : $($Analysis.total_events)",
-        "Matched Rules  : $($Analysis.matched_rules)",
+        "Security Score : $securityScore",
+        "Overall Risk   : $overallRisk",
+        "Total Events   : $totalEvents",
+        "Matched Rules  : $matchedRules",
         "",
         "Output Files",
         "HTML    : $reportHtmlPath",
@@ -106,37 +178,39 @@ function Invoke-SDMonReporter {
     ) -join "`n"
     Set-Content -LiteralPath $summaryPath -Value $summary -Encoding UTF8
 
-    $device = $Analysis.device
+    $windowsCaption = Get-SDMonValue -SourceObject $device -Name "windows_caption" -Default "Unknown"
+    $windowsVersion = Get-SDMonValue -SourceObject $device -Name "windows_version" -Default "Unknown"
     $deviceMetrics = [ordered]@{
-        "Hostname" = $device.hostname
-        "Current User" = $device.current_user
-        "Windows" = ("{0} {1}" -f $device.windows_caption, $device.windows_version)
-        "Architecture" = $device.os_architecture
-        "PowerShell" = $device.powershell_version
-        "Uptime" = $device.uptime
+        "Hostname" = Get-SDMonValue -SourceObject $device -Name "hostname" -Default "Unknown"
+        "Current User" = Get-SDMonValue -SourceObject $device -Name "current_user" -Default "Unknown"
+        "Windows" = ("{0} {1}" -f $windowsCaption, $windowsVersion).Trim()
+        "Architecture" = Get-SDMonValue -SourceObject $device -Name "os_architecture" -Default "Unknown"
+        "PowerShell" = Get-SDMonValue -SourceObject $device -Name "powershell_version" -Default "Unknown"
+        "Scan Time" = $generatedAt
+        "Uptime" = Get-SDMonValue -SourceObject $device -Name "uptime" -Default "Unknown"
     }
 
     $summaryMetrics = [ordered]@{
-        "Security Score" = $Analysis.security_score
-        "Overall Risk" = $Analysis.overall_risk
-        "Total Events" = $Analysis.total_events
-        "Matched Rules" = $Analysis.matched_rules
+        "Security Score" = $securityScore
+        "Overall Risk" = $overallRisk
+        "Total Events" = $totalEvents
+        "Matched Rules" = $matchedRules
     }
 
     $riskMetrics = [ordered]@{
-        "High" = $Analysis.risk_distribution.High
-        "Medium" = $Analysis.risk_distribution.Medium
-        "Low" = $Analysis.risk_distribution.Low
-        "Info" = $Analysis.risk_distribution.Info
+        "High" = Get-SDMonValue -SourceObject $riskDistribution -Name "High" -Default 0
+        "Medium" = Get-SDMonValue -SourceObject $riskDistribution -Name "Medium" -Default 0
+        "Low" = Get-SDMonValue -SourceObject $riskDistribution -Name "Low" -Default 0
+        "Info" = Get-SDMonValue -SourceObject $riskDistribution -Name "Info" -Default 0
     }
 
-    $findingRows = New-SDMonHtmlRows -Rows $Analysis.top_findings -Columns @("severity", "title", "target", "recommendation")
-    $permissionRows = New-SDMonHtmlRows -Rows $Analysis.permission_warnings -Columns @("event_time", "category", "target", "message")
-    $timelineRows = New-SDMonHtmlRows -Rows $Analysis.timeline -Columns @("time", "category", "action", "target", "severity", "message")
+    $findingRows = New-SDMonHtmlRows -Rows $topFindings -Columns @("severity", "title", "target", "recommendation")
+    $permissionRows = New-SDMonHtmlRows -Rows $permissionWarnings -Columns @("event_time", "category", "target", "message")
+    $timelineRows = New-SDMonHtmlRows -Rows $analysisTimeline -Columns @("time", "category", "action", "target", "severity", "message")
     $technicalRows = New-SDMonHtmlRows -Rows $Events -Columns @("event_time", "category", "type", "action", "target", "severity")
 
-    $deductions = if ($Analysis.deductions.Count -gt 0) {
-        "<ul>" + (($Analysis.deductions | ForEach-Object { "<li>{0}</li>" -f (ConvertTo-SDMonHtml $_) }) -join "") + "</ul>"
+    $deductions = if ($deductionsList.Count -gt 0) {
+        "<ul>" + (($deductionsList | ForEach-Object { "<li>{0}</li>" -f (ConvertTo-SDMonHtml $_) }) -join "") + "</ul>"
     } else {
         "<p>No score deductions.</p>"
     }
@@ -144,7 +218,7 @@ function Invoke-SDMonReporter {
     $template = Get-Content -LiteralPath $TemplatePath -Raw
     $html = $template.
         Replace("{{TITLE}}", "SDMon Windows Endpoint Assessment").
-        Replace("{{GENERATED_AT}}", (ConvertTo-SDMonHtml $Analysis.generated_at)).
+        Replace("{{GENERATED_AT}}", (ConvertTo-SDMonHtml $generatedAt)).
         Replace("{{DEVICE_CARDS}}", (New-SDMonMetricCards -Metrics $deviceMetrics)).
         Replace("{{SUMMARY_CARDS}}", (New-SDMonMetricCards -Metrics $summaryMetrics)).
         Replace("{{RISK_CARDS}}", (New-SDMonMetricCards -Metrics $riskMetrics)).
