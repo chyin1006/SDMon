@@ -1,5 +1,28 @@
 Set-StrictMode -Version 3.0
 
+function Test-SDMonStartupItemIgnored {
+    param([Parameter(Mandatory = $true)][System.IO.FileSystemInfo]$Item)
+
+    if ($Item.Name -ieq "desktop.ini") {
+        return $true
+    }
+
+    if ($Item.PSIsContainer) {
+        return $false
+    }
+
+    $extension = [System.IO.Path]::GetExtension($Item.Name).ToLowerInvariant()
+    $startupExtensions = @(".lnk", ".exe", ".bat", ".cmd", ".ps1", ".vbs", ".js", ".wsf", ".url")
+    $isHidden = (($Item.Attributes -band [System.IO.FileAttributes]::Hidden) -ne 0)
+    $isSystem = (($Item.Attributes -band [System.IO.FileAttributes]::System) -ne 0)
+
+    if (($isHidden -or $isSystem) -and $startupExtensions -notcontains $extension) {
+        return $true
+    }
+
+    return $false
+}
+
 function Add-SDMonStartupFolderEvents {
     param(
         [Parameter(Mandatory = $true)][string]$Path,
@@ -19,7 +42,13 @@ function Add-SDMonStartupFolderEvents {
             return $events
         }
 
+        $reportableCount = 0
         foreach ($item in $items) {
+            if (Test-SDMonStartupItemIgnored -Item $item) {
+                continue
+            }
+
+            $reportableCount += 1
             $itemType = if ($item.PSIsContainer) { "directory" } else { "file" }
             $events += New-SDMonEvent -Category "startup" -Type "startup_folder_item" -Action "found" -Target $item.FullName -Severity "Low" -Message "Startup folder item found; review recommended." -Recommendation "Confirm startup item is expected and approved." -Details @{
                 scope = $Scope
@@ -27,6 +56,10 @@ function Add-SDMonStartupFolderEvents {
                 path = $item.FullName
                 item_type = $itemType
             }
+        }
+
+        if ($reportableCount -eq 0) {
+            $events += New-SDMonEvent -Category "startup" -Type "startup_folder" -Action "empty" -Target $Path -Severity "Info" -Message "Startup folder has no reportable startup items." -Details @{ scope = $Scope; path = $Path }
         }
     } catch {
         $events += New-SDMonEvent -Category "startup" -Type "permission_warning" -Action "permission_denied" -Target $Path -Severity "Info" -Message "Startup folder could not be read." -Details @{ scope = $Scope; error = $_.Exception.Message }

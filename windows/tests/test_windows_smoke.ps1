@@ -61,6 +61,22 @@ $noFindingOutputPath = Join-Path ([System.IO.Path]::GetTempPath()) ("sdmon-windo
 . (Join-Path $WindowsRoot "runtime\event_writer.ps1")
 . (Join-Path $WindowsRoot "runtime\analyzer.ps1")
 . (Join-Path $WindowsRoot "runtime\reporter.ps1")
+. (Join-Path $WindowsRoot "collectors\startup_collector.ps1")
+
+$startupSamplePath = Join-Path ([System.IO.Path]::GetTempPath()) ("sdmon-startup-sample-" + [guid]::NewGuid().ToString())
+New-Item -ItemType Directory -Path $startupSamplePath -Force | Out-Null
+Set-Content -LiteralPath (Join-Path $startupSamplePath "desktop.ini") -Value "[.ShellClassInfo]" -Encoding ASCII
+Set-Content -LiteralPath (Join-Path $startupSamplePath "approved-startup.lnk") -Value "sample shortcut placeholder" -Encoding ASCII
+
+$startupSampleEvents = Add-SDMonStartupFolderEvents -Path $startupSamplePath -Scope "sample"
+$desktopIniEvents = @($startupSampleEvents | Where-Object { $_.target -like "*desktop.ini*" })
+if ($desktopIniEvents.Count -ne 0) {
+    throw "desktop.ini should not be reported as a startup item."
+}
+$shortcutEvents = @($startupSampleEvents | Where-Object { $_.target -like "*approved-startup.lnk*" })
+if ($shortcutEvents.Count -ne 1) {
+    throw "Expected sample startup shortcut to be reported."
+}
 
 $noFindingAnalysis = Invoke-SDMonAnalyzer -Events @()
 if ($noFindingAnalysis.security_score -ne 100) {
