@@ -1,0 +1,31 @@
+==============================
+SDMon Windows Endpoint Assessment
+==============================
+Organization   : Example Corp
+Hostname       : demo-windows.local
+Current User   : EXAMPLE\demo-user
+Windows        : Microsoft Windows 11 Enterprise 10.0.22631
+Architecture   : 64-bit
+PowerShell     : 5.1.x
+
+Security Score : 82
+Overall Risk   : Low
+Total Events   : 64
+Matched Rules  : 8
+
+Output Files
+HTML    : demo-report.html
+JSON    : demo-report.json
+CSV     : demo-report.csv
+Summary : demo-summary.txt
+ZIP     : demo-report.zip
+
+Findings
+- Medium | Firewall profile review recommended | Private
+- Low | BitLocker protection review recommended | C:
+- Low | Startup registry item review recommended | ExampleUpdater
+- Info | Browser extension review recommended | Example Extension
+- Info | Listening TCP port observed | 127.0.0.1:8080
+- Info | Non-Microsoft scheduled task observed | ExampleUpdateTask
+- Info | Credential metadata path found | SSH directory
+- Info | Recent event log count collected | System

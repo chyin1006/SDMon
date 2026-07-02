@@ -1,44 +1,44 @@
-# SDMon Windows Endpoint Assessment
+# SDMon Windows Beta 01
 
-This directory contains the Windows Beta 01 skeleton for SDMon endpoint assessment.
+SDMon Windows Beta 01 is a PowerShell-native endpoint assessment workflow for Windows testing. It collects read-only endpoint signals, analyzes them locally, and generates local HTML, JSON, CSV, text, ZIP, events, and timeline outputs.
 
-The Windows implementation is PowerShell-native, read-only, and separate from the macOS RC1 implementation.
+Windows Beta 01 is separate from the macOS RC1 workflow. The Windows machine is for real execution testing only; code changes should be made from the macOS Codex workflow.
 
-## Safety Model
+## Read-Only Safety Model
 
-The Windows basic scan does not:
+The Windows scan is designed to be read-only.
 
-- Require administrator permission.
+It does not:
+
 - Modify the registry.
-- Stop, start, restart, or modify services.
+- Change system settings.
+- Stop, start, restart, enable, disable, or delete services.
+- Enable, disable, or delete scheduled tasks.
 - Delete files.
-- Change firewall, Defender, BitLocker, UAC, browser, or startup settings.
-- Run as a background service.
+- Read browser cookies, history, saved credentials, or private profile data.
+- Read credential file contents.
 - Perform remediation.
+- Install a background service.
 
-If a check cannot be read, SDMon records a permission warning and continues.
+If a check cannot be read, SDMon records `permission_denied`, `requires_admin`, or an informational warning and continues.
 
-## Run
+## Supported Command
 
-From the repository root on Windows:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\windows\sdmon-windows.ps1
-```
-
-Use a custom output directory:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\windows\sdmon-windows.ps1 -Output .\output
-```
-
-Disable automatic report opening:
+Run from the repository root on a Windows test machine:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\windows\sdmon-windows.ps1 -Output .\output -NoOpen
 ```
 
-## Output
+The `-NoOpen` option prevents automatic browser opening during automated tests.
+
+## Smoke Test
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\windows\tests\test_windows_smoke.ps1
+```
+
+## Output Files
 
 The scan writes:
 
@@ -55,21 +55,37 @@ output\
 
 ## Current Collectors
 
-Phase 2 includes basic read-only collectors:
+Windows Beta 01 currently includes read-only collectors for:
 
 - System
 - Security
 - Startup
 - Browser
+- Process
+- Network
+- Services
+- Scheduled Tasks
+- Credential Metadata
+- Event Log Basic Counts
 
-Process, network, service, scheduled task, event log, and credential deep scanning are intentionally not implemented in this phase.
+## Permission Model
 
-## Windows Testing
+The basic scan does not require Administrator by default. Some endpoint information may be unavailable without elevated privileges. In those cases, SDMon should record a non-fatal warning and continue.
 
-Run on a real Windows machine:
+## Reporting Windows Test Results
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\windows\tests\test_windows_smoke.ps1
-```
+When reporting Windows test results back to macOS Codex, include:
 
-Send the full terminal output and generated file list back to macOS Codex for code changes.
+- Current Git branch and commit hash.
+- Exact command executed.
+- Smoke test result.
+- Formal scan result.
+- Security Score.
+- Overall Risk.
+- Events count.
+- Matched Rules count.
+- Generated output file list.
+- Any terminal error text.
+- Whether `report.html` opened successfully.
+
+Do not publish real Windows reports because they may include real hostnames, usernames, local IPs, process names, services, scheduled tasks, and network connections.

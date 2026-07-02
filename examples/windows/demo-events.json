@@ -1,0 +1,238 @@
+[
+  {
+    "event_id": "demo-event-001",
+    "event_time": "2026-07-02T08:00:00Z",
+    "platform": "windows",
+    "category": "system",
+    "type": "system_summary",
+    "action": "collected",
+    "target": "demo-windows.local",
+    "severity": "Info",
+    "message": "Windows system summary collected.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "organization": "Example Corp",
+      "hostname": "demo-windows.local",
+      "current_user": "EXAMPLE\\demo-user",
+      "windows_caption": "Microsoft Windows 11 Enterprise",
+      "windows_version": "10.0.22631",
+      "os_architecture": "64-bit",
+      "powershell_version": "5.1.x",
+      "local_ip": "192.0.2.10"
+    }
+  },
+  {
+    "event_id": "demo-event-002",
+    "event_time": "2026-07-02T08:00:05Z",
+    "platform": "windows",
+    "category": "security",
+    "type": "firewall_status",
+    "action": "checked",
+    "target": "Private",
+    "severity": "Medium",
+    "message": "Firewall profile review recommended.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "profile": "Private",
+      "enabled": false
+    }
+  },
+  {
+    "event_id": "demo-event-003",
+    "event_time": "2026-07-02T08:00:10Z",
+    "platform": "windows",
+    "category": "security",
+    "type": "bitlocker_status",
+    "action": "checked",
+    "target": "C:",
+    "severity": "Low",
+    "message": "BitLocker protection review recommended.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "mount_point": "C:",
+      "protection_status": "Off"
+    }
+  },
+  {
+    "event_id": "demo-event-004",
+    "event_time": "2026-07-02T08:00:15Z",
+    "platform": "windows",
+    "category": "startup",
+    "type": "run_key_item",
+    "action": "found",
+    "target": "ExampleUpdater",
+    "severity": "Low",
+    "message": "Startup registry item review recommended.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "name": "ExampleUpdater",
+      "value": "C:\\Program Files\\Example Corp\\ExampleUpdater.exe"
+    }
+  },
+  {
+    "event_id": "demo-event-005",
+    "event_time": "2026-07-02T08:00:20Z",
+    "platform": "windows",
+    "category": "browser",
+    "type": "browser_extension",
+    "action": "found",
+    "target": "Example Extension",
+    "severity": "Info",
+    "message": "Browser extension review recommended.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "browser": "Chrome",
+      "extension_id": "exampleextensionid",
+      "extension_name": "Example Browser Extension",
+      "version": "1.0.0",
+      "manifest_path": "C:\\Users\\demo\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Extensions\\exampleextensionid\\1.0.0\\manifest.json"
+    }
+  },
+  {
+    "event_id": "demo-event-006",
+    "event_time": "2026-07-02T08:00:25Z",
+    "platform": "windows",
+    "category": "process",
+    "type": "process_observed",
+    "action": "observed",
+    "target": "ExampleAgent.exe",
+    "severity": "Info",
+    "message": "Process observed.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "process_name": "ExampleAgent.exe",
+      "pid": 4242,
+      "parent_pid": 1000,
+      "path": "C:\\Program Files\\Example Corp\\ExampleAgent.exe",
+      "company": "Example Corp",
+      "product": "Example Agent"
+    }
+  },
+  {
+    "event_id": "demo-event-007",
+    "event_time": "2026-07-02T08:00:30Z",
+    "platform": "windows",
+    "category": "network",
+    "type": "tcp_connection",
+    "action": "listen",
+    "target": "127.0.0.1:8080",
+    "severity": "Info",
+    "message": "Listening TCP port observed.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "local_address": "127.0.0.1",
+      "local_port": 8080,
+      "state": "Listen",
+      "owning_pid": 4242
+    }
+  },
+  {
+    "event_id": "demo-event-008",
+    "event_time": "2026-07-02T08:00:35Z",
+    "platform": "windows",
+    "category": "network",
+    "type": "tcp_connection",
+    "action": "established",
+    "target": "192.0.2.10:51515 -> 198.51.100.10:443",
+    "severity": "Info",
+    "message": "TCP connection observed.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "local_address": "192.0.2.10",
+      "local_port": 51515,
+      "remote_address": "198.51.100.10",
+      "remote_port": 443,
+      "state": "Established",
+      "owning_pid": 4242
+    }
+  },
+  {
+    "event_id": "demo-event-009",
+    "event_time": "2026-07-02T08:00:40Z",
+    "platform": "windows",
+    "category": "service",
+    "type": "service_observed",
+    "action": "observed",
+    "target": "ExampleVPNService",
+    "severity": "Info",
+    "message": "Service observed.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "name": "ExampleVPNService",
+      "display_name": "Example VPN Service",
+      "state": "Running",
+      "start_type": "Auto",
+      "path": "C:\\Program Files\\Example Corp\\ExampleVPNService.exe"
+    }
+  },
+  {
+    "event_id": "demo-event-010",
+    "event_time": "2026-07-02T08:00:45Z",
+    "platform": "windows",
+    "category": "service",
+    "type": "service_observed",
+    "action": "observed",
+    "target": "ExampleSyncService",
+    "severity": "Info",
+    "message": "Service observed.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "name": "ExampleSyncService",
+      "display_name": "Example Sync Service",
+      "state": "Stopped",
+      "start_type": "Manual",
+      "path": "C:\\Program Files\\Example Corp\\ExampleSyncService.exe"
+    }
+  },
+  {
+    "event_id": "demo-event-011",
+    "event_time": "2026-07-02T08:00:50Z",
+    "platform": "windows",
+    "category": "scheduled_task",
+    "type": "task_observed",
+    "action": "observed",
+    "target": "ExampleUpdateTask",
+    "severity": "Info",
+    "message": "Non-Microsoft scheduled task observed.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "task_name": "ExampleUpdateTask",
+      "state": "Ready",
+      "action_command": "C:\\Program Files\\Example Corp\\ExampleUpdater.exe"
+    }
+  },
+  {
+    "event_id": "demo-event-012",
+    "event_time": "2026-07-02T08:00:55Z",
+    "platform": "windows",
+    "category": "credential_metadata",
+    "type": "credential_path",
+    "action": "found",
+    "target": "SSH directory",
+    "severity": "Info",
+    "message": "SSH directory metadata found; content not read.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "path": "C:\\Users\\demo\\.ssh",
+      "item_type": "directory",
+      "acl_readable": true
+    }
+  },
+  {
+    "event_id": "demo-event-013",
+    "event_time": "2026-07-02T08:01:00Z",
+    "platform": "windows",
+    "category": "event_log",
+    "type": "recent_event_count",
+    "action": "counted",
+    "target": "System",
+    "severity": "Info",
+    "message": "Recent event log count collected.",
+    "source": "sdmon-windows-demo",
+    "details": {
+      "log_name": "System",
+      "count": 42,
+      "sample_limited": false
+    }
+  }
+]

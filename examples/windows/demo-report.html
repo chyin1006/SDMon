@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SDMon Windows Endpoint Assessment Demo</title>
+  <style>
+    body { margin: 0; background: #f6f8fb; color: #172033; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+    main { max-width: 1180px; margin: 0 auto; padding: 32px; }
+    section, header { background: #fff; border: 1px solid #d8e1ee; border-radius: 10px; margin-bottom: 18px; padding: 22px; }
+    .eyebrow { color: #2563eb; font-size: 12px; font-weight: 800; letter-spacing: 1.8px; text-transform: uppercase; }
+    h1 { margin: 8px 0 0; font-size: 32px; }
+    h2 { margin: 0 0 14px; }
+    .subtle { color: #61708c; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .metric { background: #f8fafc; border: 1px solid #dbe5f2; border-radius: 8px; padding: 14px; min-height: 64px; }
+    .label { color: #61708c; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; }
+    .value { margin-top: 5px; font-size: 20px; font-weight: 800; overflow-wrap: anywhere; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; vertical-align: top; border-bottom: 1px solid #e5ebf4; padding: 10px; overflow-wrap: anywhere; }
+    th { background: #f8fafc; color: #4b5874; }
+    .notice { border-left: 4px solid #2563eb; padding-left: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Synthetic Demo Report</div>
+    <h1>SDMon Windows Endpoint Assessment</h1>
+    <p class="subtle">Generated for Example Corp at 2026-07-02T08:01:30Z. This demo uses synthetic values only.</p>
+  </header>
+
+  <section class="notice">
+    <h2>Privacy Notice</h2>
+    <p>This demo report does not contain real hostnames, usernames, process lists, service lists, scheduled tasks, browser extensions, or network connections.</p>
+  </section>
+
+  <section>
+    <h2>Device Summary</h2>
+    <div class="grid">
+      <div class="metric"><div class="label">Organization</div><div class="value">Example Corp</div></div>
+      <div class="metric"><div class="label">Hostname</div><div class="value">demo-windows.local</div></div>
+      <div class="metric"><div class="label">Current User</div><div class="value">EXAMPLE\demo-user</div></div>
+      <div class="metric"><div class="label">Windows</div><div class="value">Microsoft Windows 11 Enterprise 10.0.22631</div></div>
+      <div class="metric"><div class="label">Architecture</div><div class="value">64-bit</div></div>
+      <div class="metric"><div class="label">PowerShell</div><div class="value">5.1.x</div></div>
+      <div class="metric"><div class="label">Local IP</div><div class="value">192.0.2.10</div></div>
+      <div class="metric"><div class="label">Remote Example</div><div class="value">198.51.100.10</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Executive Summary</h2>
+    <div class="grid">
+      <div class="metric"><div class="label">Security Score</div><div class="value">82</div></div>
+      <div class="metric"><div class="label">Overall Risk</div><div class="value">Low</div></div>
+      <div class="metric"><div class="label">Total Events</div><div class="value">64</div></div>
+      <div class="metric"><div class="label">Matched Rules</div><div class="value">8</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Risk Distribution</h2>
+    <div class="grid">
+      <div class="metric"><div class="label">High</div><div class="value">0</div></div>
+      <div class="metric"><div class="label">Medium</div><div class="value">1</div></div>
+      <div class="metric"><div class="label">Low</div><div class="value">2</div></div>
+      <div class="metric"><div class="label">Info</div><div class="value">5</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Top Findings</h2>
+    <table>
+      <thead><tr><th>Risk</th><th>Finding</th><th>Target</th><th>Recommendation</th></tr></thead>
+      <tbody>
+        <tr><td>Medium</td><td>Firewall profile review recommended</td><td>Private</td><td>Validate Windows Firewall policy for this profile.</td></tr>
+        <tr><td>Low</td><td>BitLocker protection review recommended</td><td>C:</td><td>Review disk encryption policy and recovery key management.</td></tr>
+        <tr><td>Low</td><td>Startup registry item review recommended</td><td>ExampleUpdater</td><td>Confirm startup entry is expected and approved.</td></tr>
+        <tr><td>Info</td><td>Browser extension review recommended</td><td>Example Extension</td><td>Review installed browser extensions against the approved software list.</td></tr>
+        <tr><td>Info</td><td>Listening TCP port observed</td><td>127.0.0.1:8080</td><td>Review listening ports against expected endpoint behavior.</td></tr>
+        <tr><td>Info</td><td>Non-Microsoft scheduled task observed</td><td>ExampleUpdateTask</td><td>Review scheduled tasks against approved endpoint configuration.</td></tr>
+        <tr><td>Info</td><td>Credential metadata path found</td><td>SSH directory</td><td>Confirm credential file permissions and storage location meet enterprise policy.</td></tr>
+        <tr><td>Info</td><td>Recent event log count collected</td><td>System</td><td>Review event counts if they differ from expected endpoint behavior.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Technical Details</h2>
+    <table>
+      <thead><tr><th>Category</th><th>Example</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Process</td><td>ExampleAgent.exe</td><td>Example Corp endpoint process metadata.</td></tr>
+        <tr><td>Process</td><td>ExampleUpdater.exe</td><td>Example startup helper metadata.</td></tr>
+        <tr><td>Service</td><td>ExampleVPNService</td><td>Example auto-start service.</td></tr>
+        <tr><td>Service</td><td>ExampleSyncService</td><td>Example manual service.</td></tr>
+        <tr><td>Scheduled Task</td><td>ExampleUpdateTask</td><td>Example non-Microsoft scheduled task.</td></tr>
+        <tr><td>Browser</td><td>Example Browser Extension</td><td>Manifest metadata only.</td></tr>
+        <tr><td>Network</td><td>192.0.2.10:51515 -&gt; 198.51.100.10:443</td><td>Example documentation IP connection.</td></tr>
+        <tr><td>Credential Metadata</td><td>SSH directory</td><td>Metadata found; content not read.</td></tr>
+        <tr><td>Event Log</td><td>System</td><td>Recent event log count only.</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body>
+</html>

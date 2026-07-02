@@ -1,0 +1,92 @@
+{
+  "title": "SDMon Windows Endpoint Assessment",
+  "organization": "Example Corp",
+  "generated_at": "2026-07-02T08:01:30Z",
+  "security_score": 82,
+  "overall_risk": "Low",
+  "total_events": 64,
+  "matched_rules": 8,
+  "risk_distribution": {
+    "High": 0,
+    "Medium": 1,
+    "Low": 2,
+    "Info": 5
+  },
+  "device": {
+    "hostname": "demo-windows.local",
+    "current_user": "EXAMPLE\\demo-user",
+    "windows_caption": "Microsoft Windows 11 Enterprise",
+    "windows_version": "10.0.22631",
+    "os_architecture": "64-bit",
+    "powershell_version": "5.1.x"
+  },
+  "top_findings": [
+    {
+      "title": "Firewall profile review recommended",
+      "severity": "Medium",
+      "category": "security",
+      "target": "Private",
+      "recommendation": "Validate Windows Firewall policy for this profile.",
+      "event_id": "demo-finding-001"
+    },
+    {
+      "title": "BitLocker protection review recommended",
+      "severity": "Low",
+      "category": "security",
+      "target": "C:",
+      "recommendation": "Review disk encryption policy and recovery key management.",
+      "event_id": "demo-finding-002"
+    },
+    {
+      "title": "Startup registry item review recommended",
+      "severity": "Low",
+      "category": "startup",
+      "target": "ExampleUpdater",
+      "recommendation": "Confirm startup entry is expected and approved.",
+      "event_id": "demo-finding-003"
+    },
+    {
+      "title": "Browser extension review recommended",
+      "severity": "Info",
+      "category": "browser",
+      "target": "Example Extension",
+      "recommendation": "Review installed browser extensions against the approved software list.",
+      "event_id": "demo-finding-004"
+    },
+    {
+      "title": "Listening TCP port observed",
+      "severity": "Info",
+      "category": "network",
+      "target": "127.0.0.1:8080",
+      "recommendation": "Review listening ports against expected endpoint behavior.",
+      "event_id": "demo-finding-005"
+    },
+    {
+      "title": "Non-Microsoft scheduled task observed",
+      "severity": "Info",
+      "category": "scheduled_task",
+      "target": "ExampleUpdateTask",
+      "recommendation": "Review scheduled tasks against approved endpoint configuration.",
+      "event_id": "demo-finding-006"
+    },
+    {
+      "title": "Credential metadata path found",
+      "severity": "Info",
+      "category": "credential_metadata",
+      "target": "SSH directory",
+      "recommendation": "Confirm credential file permissions and storage location meet enterprise policy.",
+      "event_id": "demo-finding-007"
+    },
+    {
+      "title": "Recent event log count collected",
+      "severity": "Info",
+      "category": "event_log",
+      "target": "System",
+      "recommendation": "Review event counts if they differ from expected endpoint behavior.",
+      "event_id": "demo-finding-008"
+    }
+  ],
+  "timeline": [
+    "See demo-timeline.json"
+  ]
+}
