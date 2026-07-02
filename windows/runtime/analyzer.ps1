@@ -13,7 +13,7 @@ function Add-SDMonFinding {
         target         = $Event.target
         recommendation = $Event.recommendation
         event_id       = $Event.event_id
-        rule_id        = "{0}_{1}" -f $Event.category, $Event.type
+        rule_id        = ("{0}_{1}" -f $Event.category, $Event.type)
         technical      = $Event.details
     })
 }
@@ -106,7 +106,7 @@ function Invoke-SDMonAnalyzer {
         title               = "SDMon Windows Endpoint Assessment"
         generated_at        = (Get-Date).ToUniversalTime().ToString("o")
         security_score      = [int]$score
-        overall_risk        = Get-SDMonRiskFromScore -Score $score
+        overall_risk        = (Get-SDMonRiskFromScore -Score $score)
         total_events        = @($Events).Count
         matched_rules       = @($findings).Count
         risk_distribution   = $riskDistribution

@@ -20,11 +20,12 @@ function Add-SDMonStartupFolderEvents {
         }
 
         foreach ($item in $items) {
+            $itemType = if ($item.PSIsContainer) { "directory" } else { "file" }
             $events += New-SDMonEvent -Category "startup" -Type "startup_folder_item" -Action "found" -Target $item.FullName -Severity "Low" -Message "Startup folder item found; review recommended." -Recommendation "Confirm startup item is expected and approved." -Details @{
                 scope = $Scope
                 name = $item.Name
                 path = $item.FullName
-                item_type = if ($item.PSIsContainer) { "directory" } else { "file" }
+                item_type = $itemType
             }
         }
     } catch {
