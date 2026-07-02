@@ -84,7 +84,8 @@ function New-SDMonHtmlRows {
     $safeColumns = @(ConvertTo-SDMonArray -Value $Columns)
 
     if ((Get-SDMonCount -Value $safeRows) -eq 0) {
-        return "<tr><td colspan=`"$(Get-SDMonCount -Value $safeColumns)`">No items found.</td></tr>"
+        $columnCount = Get-SDMonCount -Value $safeColumns
+        return ('<tr><td colspan="' + $columnCount + '">No items found.</td></tr>')
     }
 
     $htmlRows = New-Object System.Collections.ArrayList
@@ -102,7 +103,10 @@ function New-SDMonMetricCards {
 
     $cards = New-Object System.Collections.ArrayList
     foreach ($key in $Metrics.Keys) {
-        [void]$cards.Add("<div class=`"metric`"><div class=`"label`">$([System.Net.WebUtility]::HtmlEncode($key))</div><div class=`"value`">$([System.Net.WebUtility]::HtmlEncode([string]$Metrics[$key]))</div></div>")
+        $encodedKey = [System.Net.WebUtility]::HtmlEncode([string]$key)
+        $encodedValue = [System.Net.WebUtility]::HtmlEncode([string]$Metrics[$key])
+        $cardHtml = '<div class="metric"><div class="label">' + $encodedKey + '</div><div class="value">' + $encodedValue + '</div></div>'
+        [void]$cards.Add($cardHtml)
     }
     return ($cards -join "`n")
 }
@@ -222,7 +226,8 @@ function New-SDMonHtmlNotes {
         "<li>{0}</li>" -f (ConvertTo-SDMonHtml $note)
     }
 
-    return "<ul class=`"notes`">$($items -join "")</ul>"
+    $joinedItems = ($items -join "")
+    return ('<ul class="notes">' + $joinedItems + '</ul>')
 }
 
 function Invoke-SDMonReporter {
