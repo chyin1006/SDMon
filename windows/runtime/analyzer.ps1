@@ -103,17 +103,21 @@ function Invoke-SDMonAnalyzer {
         Info   = @($eventList | Where-Object { $_.severity -eq "Info" }).Count
     }
 
+    $findingList = @($findings)
+    $topFindingLimit = 25
+
     [PSCustomObject]@{
         title               = "SDMon Windows Endpoint Assessment"
         generated_at        = (Get-Date).ToUniversalTime().ToString("o")
         security_score      = [int]$score
         overall_risk        = (Get-SDMonRiskFromScore -Score $score)
         total_events        = @($eventList).Count
-        matched_rules       = @($findings).Count
+        matched_rules       = @($findingList).Count
         risk_distribution   = $riskDistribution
         deductions          = @($deductions)
         device              = $device
-        top_findings        = @($findings)
+        top_findings        = @($findingList | Select-Object -First $topFindingLimit)
+        top_finding_limit   = $topFindingLimit
         permission_warnings = @($permissionWarnings)
         timeline            = @($timeline)
     }

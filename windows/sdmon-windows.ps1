@@ -19,6 +19,12 @@ $TemplatePath = Join-Path $ScriptRoot "templates\report.html"
 . (Join-Path $CollectorRoot "security_collector.ps1")
 . (Join-Path $CollectorRoot "startup_collector.ps1")
 . (Join-Path $CollectorRoot "browser_collector.ps1")
+. (Join-Path $CollectorRoot "process_collector.ps1")
+. (Join-Path $CollectorRoot "network_collector.ps1")
+. (Join-Path $CollectorRoot "service_collector.ps1")
+. (Join-Path $CollectorRoot "scheduled_task_collector.ps1")
+. (Join-Path $CollectorRoot "credential_metadata_collector.ps1")
+. (Join-Path $CollectorRoot "event_log_collector.ps1")
 
 function Resolve-SDMonOutputPath {
     param([string]$Path)
@@ -59,19 +65,37 @@ Write-Host ""
 
 $events = @()
 
-Write-Host "[1/5] System"
+Write-Host "[1/11] System"
 $events += Invoke-SDMonCollectorSafely -Name "System" -Collector { Invoke-SDMonSystemCollector }
 
-Write-Host "[2/5] Security"
+Write-Host "[2/11] Security"
 $events += Invoke-SDMonCollectorSafely -Name "Security" -Collector { Invoke-SDMonSecurityCollector }
 
-Write-Host "[3/5] Startup"
+Write-Host "[3/11] Startup"
 $events += Invoke-SDMonCollectorSafely -Name "Startup" -Collector { Invoke-SDMonStartupCollector }
 
-Write-Host "[4/5] Browser"
+Write-Host "[4/11] Browser"
 $events += Invoke-SDMonCollectorSafely -Name "Browser" -Collector { Invoke-SDMonBrowserCollector }
 
-Write-Host "[5/5] Report"
+Write-Host "[5/11] Process"
+$events += Invoke-SDMonCollectorSafely -Name "Process" -Collector { Invoke-SDMonProcessCollector }
+
+Write-Host "[6/11] Network"
+$events += Invoke-SDMonCollectorSafely -Name "Network" -Collector { Invoke-SDMonNetworkCollector }
+
+Write-Host "[7/11] Services"
+$events += Invoke-SDMonCollectorSafely -Name "Services" -Collector { Invoke-SDMonServiceCollector }
+
+Write-Host "[8/11] Scheduled Tasks"
+$events += Invoke-SDMonCollectorSafely -Name "Scheduled Tasks" -Collector { Invoke-SDMonScheduledTaskCollector }
+
+Write-Host "[9/11] Credential Metadata"
+$events += Invoke-SDMonCollectorSafely -Name "Credential Metadata" -Collector { Invoke-SDMonCredentialMetadataCollector }
+
+Write-Host "[10/11] Event Logs"
+$events += Invoke-SDMonCollectorSafely -Name "Event Logs" -Collector { Invoke-SDMonEventLogCollector }
+
+Write-Host "[11/11] Report"
 $analysis = Invoke-SDMonAnalyzer -Events $events
 $outputs = Invoke-SDMonReporter -OutputPath $OutputPath -Events $events -Analysis $analysis -TemplatePath $TemplatePath
 

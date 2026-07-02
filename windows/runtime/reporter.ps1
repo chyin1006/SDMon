@@ -228,7 +228,7 @@ function Invoke-SDMonReporter {
     $findingRows = New-SDMonHtmlRows -Rows $topFindings -Columns @("severity", "title", "target", "recommendation")
     $permissionRows = New-SDMonHtmlRows -Rows $permissionWarnings -Columns @("event_time", "category", "target", "message")
     $timelineRows = New-SDMonHtmlRows -Rows $analysisTimeline -Columns @("time", "category", "action", "target", "severity", "message")
-    $technicalRows = New-SDMonHtmlRows -Rows $safeEvents -Columns @("event_time", "category", "type", "action", "target", "severity")
+    $technicalRows = New-SDMonHtmlRows -Rows $safeEvents -Columns @("event_time", "category", "type", "action", "target", "severity", "message")
 
     $deductions = if ((Get-SDMonCount -Value $deductionsList) -gt 0) {
         "<ul>" + (($deductionsList | ForEach-Object { "<li>{0}</li>" -f (ConvertTo-SDMonHtml $_) }) -join "") + "</ul>"

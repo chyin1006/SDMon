@@ -99,7 +99,7 @@ function Add-SDMonBrowserExtensionEvents {
         foreach ($dir in $extensionDirs) {
             $manifest = Get-SDMonExtensionManifest -ExtensionPath $dir.FullName
             $extensionName = if ($manifest.name) { $manifest.name } else { "" }
-            $target = if ($extensionName) { "{0} ({1})" -f $extensionName, $dir.Name } else { $dir.Name }
+            $target = if ($extensionName) { ("{0} ({1})" -f $extensionName, $dir.Name) } else { $dir.Name }
             $message = if ($extensionName) { "Browser extension found: $extensionName; review recommended." } else { "Browser extension ID found; review recommended." }
 
             $events += New-SDMonEvent -Category "browser" -Type "browser_extension" -Action "found" -Target $target -Severity "Info" -Message $message -Recommendation "Review installed browser extensions against the approved software list." -Details @{
