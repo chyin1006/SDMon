@@ -7,7 +7,7 @@ Set-StrictMode -Version 3.0
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
-$RepoZipUrl = "https://github.com/chyin1006/SDMon/archive/refs/heads/beta/windows-endpoint-assessment.zip"
+$RepoZipUrl = "https://github.com/chyin1006/SDMon/archive/refs/heads/main.zip"
 
 function Write-SDMonRunnerInfo {
     param([string]$Message)
@@ -26,7 +26,7 @@ function Show-SDMonRunnerUsage {
     Write-Host "Usage:"
     Write-Host "  powershell -ExecutionPolicy Bypass -File .\run-sdmon-windows.ps1"
     Write-Host ""
-    Write-Host "The runner downloads the Windows Beta branch ZIP, extracts it to a temporary"
+    Write-Host "The runner downloads the SDMon main branch ZIP, extracts it to a temporary"
     Write-Host "directory, runs the read-only Windows scan, and leaves the workspace in place."
 }
 
@@ -52,7 +52,7 @@ try {
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 $tempBase = [System.IO.Path]::GetTempPath()
 $runRoot = Join-Path $tempBase ("sdmon-windows-run-{0}" -f $timestamp)
-$zipPath = Join-Path $runRoot "sdmon-windows-beta.zip"
+$zipPath = Join-Path $runRoot "sdmon-main.zip"
 
 Write-SDMonRunnerInfo "==================================="
 Write-SDMonRunnerInfo "SDMon Windows Beta Runner"
@@ -64,31 +64,28 @@ Write-SDMonRunnerInfo "[1/6] Creating temporary workspace..."
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
 Write-SDMonRunnerInfo ("Workspace: {0}" -f $runRoot)
 
-Write-SDMonRunnerInfo "[2/6] Downloading SDMon Windows Beta ZIP..."
+Write-SDMonRunnerInfo "[2/6] Downloading SDMon ZIP..."
 try {
     Invoke-WebRequest -Uri $RepoZipUrl -OutFile $zipPath -UseBasicParsing
 } catch {
-    Stop-SDMonRunner ("Failed to download SDMon Windows Beta ZIP. {0}" -f $_.Exception.Message)
+    Stop-SDMonRunner ("Failed to download SDMon ZIP. {0}" -f $_.Exception.Message)
 }
 
 Write-SDMonRunnerInfo "[3/6] Extracting SDMon..."
 try {
     Expand-Archive -LiteralPath $zipPath -DestinationPath $runRoot -Force
 } catch {
-    Stop-SDMonRunner ("Failed to extract SDMon Windows Beta ZIP. {0}" -f $_.Exception.Message)
+    Stop-SDMonRunner ("Failed to extract SDMon ZIP. {0}" -f $_.Exception.Message)
 }
 
 Write-SDMonRunnerInfo "[4/6] Locating Windows scan entrypoint..."
-$scanScript = Get-ChildItem -Path $runRoot -Recurse -Filter "sdmon-windows.ps1" -ErrorAction Stop |
-    Where-Object { $_.FullName -like "*\windows\sdmon-windows.ps1" } |
-    Select-Object -First 1
+$repoRoot = Join-Path $runRoot "SDMon-main"
+$scanScriptPath = Join-Path $repoRoot "windows\sdmon-windows.ps1"
 
-if ($null -eq $scanScript) {
-    Stop-SDMonRunner "Could not locate windows\sdmon-windows.ps1 in the extracted archive."
+if (-not (Test-Path -LiteralPath $scanScriptPath)) {
+    Stop-SDMonRunner "Could not locate windows\sdmon-windows.ps1 in SDMon-main."
 }
 
-$windowsRoot = Split-Path -Parent $scanScript.FullName
-$repoRoot = Split-Path -Parent $windowsRoot
 Write-SDMonRunnerInfo ("SDMon path: {0}" -f $repoRoot)
 
 Write-SDMonRunnerInfo "[5/6] Running SDMon Windows scan..."
