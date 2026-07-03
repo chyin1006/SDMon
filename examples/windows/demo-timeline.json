@@ -1,0 +1,42 @@
+[
+  {
+    "time": "2026-07-02T08:00:00Z",
+    "category": "system",
+    "action": "collected",
+    "target": "demo-windows.local",
+    "severity": "Info",
+    "message": "Windows system summary collected."
+  },
+  {
+    "time": "2026-07-02T08:00:05Z",
+    "category": "security",
+    "action": "checked",
+    "target": "Private",
+    "severity": "Medium",
+    "message": "Firewall profile review recommended."
+  },
+  {
+    "time": "2026-07-02T08:00:15Z",
+    "category": "startup",
+    "action": "found",
+    "target": "ExampleUpdater",
+    "severity": "Low",
+    "message": "Startup registry item review recommended."
+  },
+  {
+    "time": "2026-07-02T08:00:30Z",
+    "category": "network",
+    "action": "listen",
+    "target": "127.0.0.1:8080",
+    "severity": "Info",
+    "message": "Listening TCP port observed."
+  },
+  {
+    "time": "2026-07-02T08:00:50Z",
+    "category": "scheduled_task",
+    "action": "observed",
+    "target": "ExampleUpdateTask",
+    "severity": "Info",
+    "message": "Non-Microsoft scheduled task observed."
+  }
+]

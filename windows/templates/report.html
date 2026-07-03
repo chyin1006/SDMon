@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{TITLE}}</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f6f8fb;
+      color: #172033;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+    section, header {
+      background: #fff;
+      border: 1px solid #d8e1ee;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      padding: 22px;
+    }
+    .eyebrow {
+      color: #2563eb;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 8px 0 0;
+      font-size: 32px;
+    }
+    h2 {
+      margin: 0 0 14px;
+    }
+    .subtle {
+      color: #61708c;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      background: #f8fafc;
+      border: 1px solid #dbe5f2;
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 64px;
+    }
+    .label {
+      color: #61708c;
+      font-size: 11px;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+    }
+    .value {
+      margin-top: 5px;
+      font-size: 20px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e5ebf4;
+      padding: 10px;
+      overflow-wrap: anywhere;
+    }
+    th {
+      background: #f8fafc;
+      color: #4b5874;
+    }
+    .note {
+      background: #eef5ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      color: #24456f;
+      margin: 0 0 14px;
+      padding: 10px 12px;
+    }
+    .notes {
+      color: #4b5874;
+      margin-top: 0;
+    }
+    details {
+      margin-top: 8px;
+    }
+    @media print {
+      body { background: #fff; }
+      main { padding: 12px; }
+      section, header { break-inside: avoid; padding: 14px; }
+      .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .metric { padding: 10px; }
+      .value { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">SDMon Windows Assessment</div>
+    <h1>{{TITLE}}</h1>
+    <p class="subtle">Generated at {{GENERATED_AT}}. Read-only local assessment. No remediation performed.</p>
+  </header>
+
+  <section>
+    <h2>Device Summary</h2>
+    <div class="grid">{{DEVICE_CARDS}}</div>
+  </section>
+
+  <section>
+    <h2>Executive Summary</h2>
+    <div class="grid">{{SUMMARY_CARDS}}</div>
+  </section>
+
+  <section>
+    <h2>Security Score</h2>
+    {{SCORE_BREAKDOWN}}
+  </section>
+
+  <section>
+    <h2>Risk Distribution</h2>
+    <div class="grid">{{RISK_CARDS}}</div>
+  </section>
+
+  <section>
+    <h2>Top Findings</h2>
+    <table>
+      <thead><tr><th>Risk</th><th>Finding</th><th>Target</th><th>Recommendation</th></tr></thead>
+      <tbody>{{FINDING_ROWS}}</tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Collector Summary</h2>
+    <table>
+      <thead><tr><th>Category</th><th>Events</th></tr></thead>
+      <tbody>{{COLLECTOR_ROWS}}</tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Permission Warnings</h2>
+    <table>
+      <thead><tr><th>Time</th><th>Category</th><th>Target</th><th>Message</th></tr></thead>
+      <tbody>{{PERMISSION_ROWS}}</tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Timeline</h2>
+    <p class="note">{{TIMELINE_NOTE}}</p>
+    <table>
+      <thead><tr><th>Time</th><th>Category</th><th>Action</th><th>Target</th><th>Risk</th><th>Message</th></tr></thead>
+      <tbody>{{TIMELINE_ROWS}}</tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Technical Details</h2>
+    <details>
+      <summary>View collected event summary</summary>
+      <p class="note">HTML technical details are sampled for readability. Full raw event data is available in events.json and timeline.json.</p>
+      {{TECHNICAL_NOTES}}
+      <table>
+        <thead><tr><th>Time</th><th>Category</th><th>Type</th><th>Action</th><th>Target</th><th>Risk</th><th>Message</th></tr></thead>
+        <tbody>{{TECHNICAL_ROWS}}</tbody>
+      </table>
+    </details>
+  </section>
+</main>
+</body>
+</html>

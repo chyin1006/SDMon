@@ -1,0 +1,10 @@
+type,title,severity,target,recommendation,event_id
+summary,Security Score,Low,Windows endpoint,Review findings and permission warnings.,
+finding,Firewall profile review recommended,Medium,Private,Validate Windows Firewall policy for this profile.,demo-finding-001
+finding,BitLocker protection review recommended,Low,C:,Review disk encryption policy and recovery key management.,demo-finding-002
+finding,Startup registry item review recommended,Low,ExampleUpdater,Confirm startup entry is expected and approved.,demo-finding-003
+finding,Browser extension review recommended,Info,Example Extension,Review installed browser extensions against the approved software list.,demo-finding-004
+finding,Listening TCP port observed,Info,127.0.0.1:8080,Review listening ports against expected endpoint behavior.,demo-finding-005
+finding,Non-Microsoft scheduled task observed,Info,ExampleUpdateTask,Review scheduled tasks against approved endpoint configuration.,demo-finding-006
+finding,Credential metadata path found,Info,SSH directory,Confirm credential file permissions and storage location meet enterprise policy.,demo-finding-007
+finding,Recent event log count collected,Info,System,Review event counts if they differ from expected endpoint behavior.,demo-finding-008
