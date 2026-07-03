@@ -1,12 +1,12 @@
 # SDMon
 
-Enterprise Security Assessment Toolkit
+Enterprise Endpoint Security Assessment Toolkit
 
 ![SDMon report home](docs/images/report-home.png)
 
-Generate enterprise-grade macOS endpoint security assessment reports with one command.
+SDMon is a read-only Enterprise Endpoint Security Assessment Toolkit for macOS and Windows.
 
-- One Command
+- One Command for macOS and Windows
 - Read-only
 - Local Analysis
 - No cloud dependency
@@ -14,27 +14,39 @@ Generate enterprise-grade macOS endpoint security assessment reports with one co
 - Executive Summary
 - Technical Details
 
-> Public Preview
+> Platform Status
 >
-> Current version: `v2.0.0-rc1`
+> macOS: Public Preview, available in `v2.0.0-rc1` and later.
 >
-> macOS-first. Windows and Linux are planned in Beta.
+> Windows: Beta Preview, available in `v2.1.0-beta.1` and later.
+>
+> Linux: Planned.
+>
+> Release note: GitHub may show `v2.0.0-rc1` as the Latest release because it is the current macOS Public Preview. Windows support is available in the `v2.1.0-beta.1` Pre-release and on `main`.
 >
 > Designed for evaluation. False positives are expected. SDMon is not a replacement for EDR, MDM, VPN, antivirus, or SOC platforms.
 
 ## What is SDMon?
 
-SDMon is a local, read-only macOS security assessment toolkit for enterprise IT and security teams.
+SDMon is a local, read-only endpoint security assessment toolkit for enterprise IT and security teams.
 
 It collects endpoint behavior and configuration signals, runs local rule matching, and generates an executive-friendly report package that can be reviewed, printed, archived, or shared internally.
 
 SDMon does not block, remove, isolate, unload, modify, or remediate anything on the endpoint.
 
+## Current Platform Status
+
+| Platform | Status | Available In | Notes |
+| --- | --- | --- | --- |
+| macOS | Public Preview | `v2.0.0-rc1` and later | One-command local assessment and report generation. |
+| Windows | Beta Preview | `v2.1.0-beta.1` and later | Tested on Windows 11 Pro and Windows 11 Home. Manual review and further QA / polish are still required. |
+| Linux | Planned | Future release | Not implemented yet. |
+
+Windows support is Beta. It is read-only and useful for evaluation, but it should not be treated as a finished stable release.
+
 ## Before You Start
 
-SDMon `v2.0.0-rc1` currently supports macOS in the public release.
-
-Windows support is under Beta development in a separate branch and pull request. It is not part of the `v2.0.0-rc1` public preview release yet.
+SDMon currently supports macOS Public Preview and Windows Beta Preview from `main`.
 
 If you use `git clone` on a fresh Mac, macOS may ask you to install Apple Command Line Tools first:
 
@@ -52,7 +64,7 @@ The one-command macOS runner below uses GitHub ZIP download mode by default and 
 
 ## Quick Start
 
-### Option 1: One-command macOS Runner
+### macOS One-command Runner
 
 Use this option for a fresh Mac when you want to avoid `git clone` and Apple Command Line Tools setup.
 
@@ -72,7 +84,20 @@ Optional Git mode:
 
 Git mode requires Git. On a fresh Mac, install Apple Command Line Tools first with `xcode-select --install`.
 
-### Option 2: Run With Git
+### Windows One-command Runner
+
+Run from Windows PowerShell:
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/chyin1006/SDMon/main/scripts/run-sdmon-windows.ps1" -OutFile ".\run-sdmon-windows.ps1"
+powershell -ExecutionPolicy Bypass -File .\run-sdmon-windows.ps1
+```
+
+The Windows runner downloads the current SDMon ZIP archive, extracts it to a temporary directory, runs the read-only Windows scan, opens `report.html` when possible, and prints generated report paths.
+
+Windows support is Beta quality. Review findings manually before using them for operational decisions.
+
+### Manual macOS: Run With Git
 
 ```bash
 git clone https://github.com/chyin1006/SDMon.git
@@ -81,7 +106,7 @@ chmod +x sdmon-v2.sh
 ./sdmon-v2.sh
 ```
 
-### Option 3: Run From GitHub ZIP
+### Manual macOS: Run From GitHub ZIP
 
 Use this option if Git is not installed yet.
 
@@ -96,7 +121,7 @@ chmod +x sdmon-v2.sh
 ./sdmon-v2.sh
 ```
 
-SDMon runs locally, asks for administrator permission once when required, writes reports to `output/`, and opens `output/report.html` on macOS.
+SDMon runs locally, writes reports to `output/`, and opens `output/report.html` when possible. The macOS workflow may ask for administrator permission once when required. The Windows Beta workflow does not require Administrator for the basic scan.
 
 Terminal screenshot coming soon.
 
@@ -128,10 +153,10 @@ Terminal screenshot coming soon.
 
 | Feature | Description |
 | --- | --- |
-| One Command | `./sdmon-v2.sh` runs the complete local scan and opens the report. |
+| One Command | macOS and Windows runners download, run, and open the local report. |
 | Read-only | SDMon collects local signals without modifying agents, settings, files, or services. |
 | Local Analysis | Events, rules, analysis, and reports are processed on the endpoint. |
-| No Cloud Dependency | No upload is required for the RC1 workflow. |
+| No Cloud Dependency | No upload is required for the current macOS or Windows workflows. |
 | Enterprise Report | Generates HTML, PDF, JSON, CSV, ZIP, and `summary.txt`. |
 | Executive Summary | Shows Security Score, Overall Risk, Top Findings, and Recommendations. |
 | Technical Details | Keeps evidence, rule IDs, paths, and raw context behind expandable details. |
@@ -151,19 +176,17 @@ SDMon is not EDR, not MDM, and not antivirus. It is a lightweight assessment and
 
 ## Detection Coverage
 
-| Module | Purpose |
-| --- | --- |
-| System | Host, user, OS, CPU, memory, and scan context. |
-| Persistence | LaunchAgent and LaunchDaemon review. |
-| Network | Local connection and exposure signals. |
-| Browser | Browser extension and application trust signals. |
-| Credential | Credential-related file metadata without reading secret values. |
-| Sensitive Files | Sensitive local paths and permission outcomes. |
-| Firewall | macOS Application Firewall status. |
-| FileVault | Disk encryption status. |
-| AI Agent | Local AI-tool-related agent signals when present. |
-| Rule Engine | Local rule matching over normalized events. |
-| Reporter | HTML, PDF, ZIP, JSON, CSV, and Summary outputs. |
+| Module | macOS | Windows Beta |
+| --- | --- | --- |
+| System | Host, user, OS, CPU, memory, and scan context. | Host, user, OS, architecture, PowerShell, uptime, CPU, memory. |
+| Security | Firewall, FileVault, Gatekeeper, SIP, XProtect, MRT, permissions. | Defender, Firewall profiles, BitLocker, UAC, elevation status. |
+| Persistence / Startup | LaunchAgent, LaunchDaemon, login item signals. | Startup folders and Run registry entries, read-only. |
+| Browser | Browser extension and application trust signals. | Chrome and Edge extension metadata where readable. |
+| Credential Metadata | Credential-related file metadata without reading credential values. | Credential-related file metadata without reading credential values. |
+| Process / Network | Local process and network exposure signals. | Process and network inventory signals. |
+| Services / Tasks | macOS service-style persistence signals. | Services and scheduled tasks, read-only. |
+| Rule Engine | Local rule matching over normalized events. | Local analysis and findings over collected events. |
+| Reporter | HTML, PDF, ZIP, JSON, CSV, and Summary outputs. | HTML, ZIP, JSON, CSV, Summary, Events, and Timeline outputs. |
 
 ## Use Cases
 
@@ -179,20 +202,18 @@ SDMon is not EDR, not MDM, and not antivirus. It is a lightweight assessment and
 
 | Platform | Status | Notes |
 | --- | --- | --- |
-| macOS | Current | V2 RC1 is macOS-first. |
-| Windows | Planned | Coming in Beta. |
-| Linux | Planned | Coming in Beta. |
+| macOS | Public Preview | Available in `v2.0.0-rc1` and later. |
+| Windows | Beta Preview | Available in `v2.1.0-beta.1` and later. Tested on Windows 11 Pro and Windows 11 Home. |
+| Linux | Planned | Not implemented yet. |
 
 ## Current Release
 
-| Item | Value |
-| --- | --- |
-| Version | `v2.0.0-rc1` |
-| Status | Public Preview |
-| Focus | macOS local assessment |
-| Output | HTML, PDF, ZIP, JSON, CSV, Summary |
-| Data handling | Local output only |
-| Risk note | False positives are expected during RC evaluation. |
+| Release | GitHub Label | Platform Scope | Status |
+| --- | --- | --- | --- |
+| `v2.0.0-rc1` | Latest | macOS | Public Preview |
+| `v2.1.0-beta.1` | Pre-release | Windows | Beta Preview |
+
+`v2.0.0-rc1` remains the Latest release for the macOS Public Preview. `v2.1.0-beta.1` adds Windows Beta support and is intentionally marked as a Pre-release.
 
 Default output files:
 
@@ -210,10 +231,11 @@ output/events.json
 ## Roadmap
 
 ```text
-RC1 Public Preview
+macOS Public Preview
+  |
+Windows Beta Preview
   |
 Beta
-  |-- Windows support
   |-- Linux support
   |-- SQLite event store
   |-- Rule manager
@@ -230,14 +252,16 @@ SDMon does not:
 - Stop, uninstall, or modify target agents.
 - Change system settings.
 - Upload reports or events.
-- Read secret values.
+- Read credential values.
 - Replace EDR, MDM, VPN, antivirus, or SOC platforms.
 - Perform automatic remediation.
 
 ## Documentation
 
 - `docs/RELEASE_NOTES_RC1.md`: RC1 release notes.
+- `docs/RELEASE_NOTES_v2.1.0-beta.1.md`: Windows Beta pre-release notes.
 - `docs/RC1_RELEASE_CHECKLIST.md`: RC1 release checklist.
+- `windows/README.md`: Windows Beta usage and safety notes.
 - `examples/README.md`: examples and first-rule walkthrough.
 - `CHANGELOG.md`: project change history.
 - `CONTRIBUTING.md`: contribution guide.

@@ -1,5 +1,7 @@
 # SDMon Beta 01 Windows Test Record
 
+This is a historical Windows Beta 01 test record from the pre-merge validation phase. Windows Beta support is now available from `main` and from the `v2.1.0-beta.1` Pre-release.
+
 ## Test Scope
 
 - Branch tested: `beta/windows-endpoint-assessment`

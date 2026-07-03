@@ -14,6 +14,8 @@ It generates local HTML, PDF, ZIP, JSON, CSV, and Summary reports from a single 
 ./sdmon-v2.sh
 ```
 
+Note: `v2.0.0-rc1` is the macOS Public Preview release. Windows Beta support is available separately in `v2.1.0-beta.1` and later.
+
 ## Highlights
 
 - One-command local scan.
@@ -62,7 +64,8 @@ output/summary.txt
 ## Known Limitations
 
 - macOS first.
-- Windows and Linux sensors are planned but not implemented.
+- Windows support is not included in RC1. Use `v2.1.0-beta.1` or later for Windows Beta Preview.
+- Linux sensors are planned but not implemented.
 - No centralized dashboard yet.
 - No fleet deployment workflow yet.
 - False positives are expected until enterprise policy and allowlist support are added.
@@ -79,7 +82,7 @@ Planned Beta work:
 - Dashboard.
 - IOC and YARA support.
 - MITRE ATT&CK mapping.
-- Windows and Linux sensor research.
+- Windows Beta polish and Linux sensor research.
 
 ## Safety Boundaries
 

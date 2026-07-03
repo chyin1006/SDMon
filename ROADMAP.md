@@ -4,7 +4,7 @@
 
 `v2.0.0-rc1`
 
-Status: Public Preview.
+Status: macOS Public Preview.
 
 RC1 is focused on macOS local security assessment reports:
 
@@ -14,12 +14,25 @@ RC1 is focused on macOS local security assessment reports:
 - HTML, PDF, ZIP, JSON, CSV, and Summary outputs.
 - Executive Summary, Top Findings, Recommendations, Timeline, and Technical Details.
 
+`v2.1.0-beta.1`
+
+Status: Windows Beta Preview.
+
+Windows Beta adds read-only local endpoint assessment reports for Windows:
+
+- One-command Windows runner.
+- PowerShell-native local scan.
+- HTML, ZIP, JSON, CSV, Summary, Events, and Timeline outputs.
+- Read-only system, security, startup, browser, process, network, services, scheduled task, credential metadata, and event log count collection.
+
+Windows support is Beta quality. It has been tested on Windows 11 Pro and Windows 11 Home, but still requires manual review and further QA / polish.
+
 ## Release Path
 
 ```text
-RC1
+macOS RC1 Public Preview
   |
-Public Preview
+Windows Beta Preview
   |
 Beta
   |
@@ -36,7 +49,7 @@ Stable
 - Rule Manager.
 - IOC and YARA support.
 - MITRE ATT&CK mapping.
-- Windows sensor research.
+- Windows report polish and false-positive tuning.
 - Linux sensor research.
 
 ## Stable Release Goals

@@ -1,13 +1,17 @@
 # SDMon Beta 01 Windows Release Checklist
 
+Status: completed for `v2.1.0-beta.1` Pre-release.
+
+Windows Beta support is now available from `main`. Future Windows changes should continue through pull requests and should keep the workflow read-only.
+
 ## Functional Checks
 
-- [ ] Confirm branch is `beta/windows-endpoint-assessment`.
-- [ ] Run Windows smoke test successfully.
-- [ ] Run formal Windows scan successfully.
-- [ ] Confirm progress completes through all scan stages.
-- [ ] Confirm output files are generated.
-- [ ] Confirm `report.html` opens successfully.
+- [x] Confirm Windows Beta support is available from `main`.
+- [x] Run Windows smoke test successfully.
+- [x] Run formal Windows scan successfully.
+- [x] Confirm progress completes through all scan stages.
+- [x] Confirm output files are generated.
+- [x] Confirm `report.html` opens successfully.
 
 ## Safety Checks
 
@@ -62,4 +66,4 @@
 
 ## Release Rule
 
-Do not merge to `main` until this checklist is reviewed.
+Windows Beta 01 has been merged for `v2.1.0-beta.1` Pre-release. Do not create new tags or releases from this checklist; use it as the historical readiness record.

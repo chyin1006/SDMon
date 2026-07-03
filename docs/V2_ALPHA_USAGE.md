@@ -1,16 +1,24 @@
-# SDMon V2 RC1 Usage
+# SDMon Usage
 
-## 1. V2 RC1 Current Status
+## 1. Current Status
 
-SDMon V2 RC1 Public Preview is a runnable macOS-first endpoint security assessment toolkit.
+SDMon is a runnable read-only endpoint security assessment toolkit for macOS and Windows.
 
 This is a public preview release designed for evaluation. It is not a stable enterprise deployment release.
 
-It provides a local, read-only pipeline for collecting macOS endpoint signals, matching rules, analyzing results, and generating enterprise-style reports.
+It provides a local, read-only pipeline for collecting endpoint signals, matching rules, analyzing results, and generating enterprise-style reports.
 
 One command collects local endpoint security signals and generates local HTML, PDF, ZIP, JSON, CSV, and text reports.
 
-The public `v2.0.0-rc1` release currently supports macOS. Windows support is under Beta development in a separate branch and pull request, and is not part of RC1 yet.
+Current platform status:
+
+| Platform | Status | Available In |
+| --- | --- | --- |
+| macOS | Public Preview | `v2.0.0-rc1` and later |
+| Windows | Beta Preview | `v2.1.0-beta.1` and later |
+| Linux | Planned | Future release |
+
+Windows Beta has been tested on Windows 11 Pro and Windows 11 Home. Manual review and additional QA / polish are still required.
 
 ## 2. Before You Start
 
@@ -26,13 +34,13 @@ After installation, verify Git is available:
 git --version
 ```
 
-The one-command macOS runner below uses GitHub ZIP download mode by default and does not require Git.
+The one-command runners below use GitHub ZIP download mode by default and do not require Git.
 
 ## 3. Quick Start
 
-Run SDMon V2 RC1 Public Preview in about 5 minutes.
+Run SDMon in about 5 minutes.
 
-### Option 1: One-command macOS Runner
+### macOS One-command Runner
 
 Use this option for a fresh Mac when you want to avoid `git clone` and Apple Command Line Tools setup.
 
@@ -52,7 +60,20 @@ Optional Git mode:
 
 Git mode requires Git. On a fresh Mac, install Apple Command Line Tools first with `xcode-select --install`.
 
-### Option 2: Run With Git
+### Windows One-command Runner
+
+Run from Windows PowerShell:
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/chyin1006/SDMon/main/scripts/run-sdmon-windows.ps1" -OutFile ".\run-sdmon-windows.ps1"
+powershell -ExecutionPolicy Bypass -File .\run-sdmon-windows.ps1
+```
+
+The Windows runner downloads the current SDMon ZIP archive, extracts it to a temporary directory, runs the read-only Windows scan, opens `report.html` when possible, and prints generated report paths.
+
+Windows support is Beta quality. Review findings manually before using them for operational decisions.
+
+### Manual macOS: Run With Git
 
 ```bash
 git clone https://github.com/chyin1006/SDMon.git
@@ -61,7 +82,7 @@ chmod +x sdmon-v2.sh
 ./sdmon-v2.sh
 ```
 
-### Option 3: Run From GitHub ZIP
+### Manual macOS: Run From GitHub ZIP
 
 Use this option if Git is not installed yet.
 
@@ -91,17 +112,18 @@ output/timeline.json
 output/events.json
 ```
 
-## 4. Supported Platform
+## 4. Supported Platforms
 
 Current support:
 
-- macOS
+- macOS Public Preview.
+- Windows Beta Preview.
 
-Windows and Linux are planned for future versions. Windows Beta work is being developed separately and is not included in `v2.0.0-rc1`.
+Linux is planned for a future version.
 
 ## 5. Current Capabilities
 
-V2 RC1 currently includes:
+Current SDMon capabilities include:
 
 - Event Layer
 - Producer
@@ -109,6 +131,7 @@ V2 RC1 currently includes:
 - Analyzer
 - Reporter
 - macOS Sensors
+- Windows Beta Collectors
 - CLI Wrapper
 
 ## 6. Output Directory
@@ -148,7 +171,7 @@ open output/report.html
 
 ## 8. Write Your First Rule
 
-V2 RC1 rules live in `rules_v2/` and use Bash-friendly `.conf` files.
+macOS rules live in `rules_v2/` and use Bash-friendly `.conf` files.
 
 Start from the example rule:
 
@@ -181,9 +204,11 @@ See `examples/README.md` for more detail.
 
 ## 9. Current Limitations
 
-V2 RC1 limitations:
+Current limitations:
 
 - Public preview stage.
+- Windows support is Beta quality.
+- Linux is not implemented yet.
 - Does not capture packets.
 - Does not modify the system.
 - Does not modify target Agents.
@@ -191,7 +216,7 @@ V2 RC1 limitations:
 
 ## 10. Safety Notes
 
-V2 RC1 is designed for local, read-only assessment:
+SDMon is designed for local, read-only assessment:
 
 - Read-only collection.
 - Local output only.
@@ -216,7 +241,7 @@ bash tests/test_sdmon_v2_cli.sh
 
 Planned next steps:
 
-- End-to-end release candidate validation.
-- Report optimization.
+- Windows Beta QA and report polish.
+- macOS report optimization.
 - Rule example expansion.
-- Real macOS target Profile support for Sensors.
+- Linux planning.
