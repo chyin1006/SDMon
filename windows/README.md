@@ -2,7 +2,7 @@
 
 SDMon Windows Beta 01 is a PowerShell-native endpoint assessment workflow for Windows testing. It collects read-only endpoint signals, analyzes them locally, and generates local HTML, JSON, CSV, text, ZIP, events, and timeline outputs.
 
-Windows Beta 01 is separate from the macOS RC1 workflow. The Windows machine is for real execution testing only; code changes should be made from the macOS Codex workflow.
+Windows support is Beta quality and is now available from the main branch. The macOS RC1 workflow remains separate.
 
 ## Read-Only Safety Model
 
@@ -27,11 +27,11 @@ If a check cannot be read, SDMon records `permission_denied`, `requires_admin`, 
 Normal users can run the Windows Beta one-command runner from PowerShell:
 
 ```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/chyin1006/SDMon/beta/windows-endpoint-assessment/scripts/run-sdmon-windows.ps1" -OutFile ".\run-sdmon-windows.ps1"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/chyin1006/SDMon/main/scripts/run-sdmon-windows.ps1" -OutFile ".\run-sdmon-windows.ps1"
 powershell -ExecutionPolicy Bypass -File .\run-sdmon-windows.ps1
 ```
 
-The runner downloads the Windows Beta branch ZIP, extracts it to a temporary directory, runs the read-only Windows scan, opens `report.html` automatically when possible, and prints generated output paths. If automatic opening fails, it prints the full report path for manual review.
+The runner downloads the SDMon main branch ZIP, extracts it to a temporary directory, runs the read-only Windows scan, opens `report.html` automatically when possible, and prints generated output paths. If automatic opening fails, it prints the full report path for manual review.
 
 ## Manual Repository Command
 
