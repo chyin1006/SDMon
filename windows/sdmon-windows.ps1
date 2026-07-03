@@ -119,7 +119,14 @@ Write-Host ("Timeline : {0}" -f $outputs.timeline_json)
 
 if (-not $NoOpen) {
     if (Test-Path -LiteralPath $outputs.report_html) {
-        Start-Process -FilePath $outputs.report_html
+        try {
+            Start-Process -FilePath $outputs.report_html
+            Write-Host ("Opened report: {0}" -f $outputs.report_html)
+        } catch {
+            Write-Host "Could not automatically open report.html."
+            Write-Host "Please open it manually:"
+            Write-Host $outputs.report_html
+        }
     }
 }
 

@@ -24,15 +24,34 @@ If a check cannot be read, SDMon records `permission_denied`, `requires_admin`, 
 
 ## Supported Command
 
+Normal users can run the Windows Beta one-command runner from PowerShell:
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/chyin1006/SDMon/beta/windows-endpoint-assessment/scripts/run-sdmon-windows.ps1" -OutFile ".\run-sdmon-windows.ps1"
+powershell -ExecutionPolicy Bypass -File .\run-sdmon-windows.ps1
+```
+
+The runner downloads the Windows Beta branch ZIP, extracts it to a temporary directory, runs the read-only Windows scan, opens `report.html` automatically when possible, and prints generated output paths. If automatic opening fails, it prints the full report path for manual review.
+
+## Manual Repository Command
+
 Run from the repository root on a Windows test machine:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\windows\sdmon-windows.ps1 -Output .\output
+```
+
+Use `-NoOpen` for test or automation workflows only:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\windows\sdmon-windows.ps1 -Output .\output -NoOpen
 ```
 
-The `-NoOpen` option prevents automatic browser opening during automated tests.
+The default run opens `report.html` automatically when possible. The `-NoOpen` option prevents automatic browser opening during automated tests.
 
 ## Smoke Test
+
+The smoke test is for development validation only. It uses `-NoOpen` internally.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\windows\tests\test_windows_smoke.ps1

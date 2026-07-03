@@ -2,6 +2,10 @@
 
 This backlog records known Windows Beta 01 QA and polish items that should not block the current collector implementation.
 
+## Completed Polish
+
+- Windows one-command runner added for ZIP-based execution without Git.
+
 ## QA / Polish Backlog
 
 - Browser extension names may still show `__MSG_xxx` localization placeholders.
