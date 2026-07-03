@@ -114,6 +114,7 @@ info "[6/6] Running SDMon..."
 )
 
 OUTPUT_DIR="$SDMON_DIR/output"
+REPORT_HTML="$OUTPUT_DIR/report.html"
 info ""
 info "==================================="
 info "SDMon runner completed."
@@ -130,6 +131,26 @@ if [ -d "$OUTPUT_DIR" ]; then
     done
 else
     info "  No output directory found."
+fi
+info ""
+if [ -f "$REPORT_HTML" ]; then
+    info "Opening report..."
+    if open "$REPORT_HTML" >/dev/null 2>&1; then
+        info "Opened report:"
+        info "$REPORT_HTML"
+    else
+        info "Could not automatically open report.html."
+        info "Please open it manually:"
+        info "$REPORT_HTML"
+    fi
+else
+    info "WARNING: report.html was not found."
+    if [ -d "$OUTPUT_DIR" ]; then
+        info "Available output files:"
+        find "$OUTPUT_DIR" -maxdepth 1 -type f -print | sort | sed 's/^/  /'
+    else
+        info "No output files are available."
+    fi
 fi
 info ""
 info "The temporary workspace is left in place for review."

@@ -62,7 +62,7 @@ chmod +x run-sdmon-macos.sh
 ./run-sdmon-macos.sh
 ```
 
-The runner downloads the current SDMon ZIP archive, extracts it to a temporary directory, runs `sdmon-v2.sh`, and prints generated report paths.
+The runner downloads the current SDMon ZIP archive, extracts it to a temporary directory, runs `sdmon-v2.sh`, opens `report.html` when possible, and prints generated report paths. If automatic opening fails, it prints the report path for manual review.
 
 Optional Git mode:
 
