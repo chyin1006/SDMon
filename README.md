@@ -48,9 +48,31 @@ After installation, verify Git is available:
 git --version
 ```
 
+The one-command macOS runner below uses GitHub ZIP download mode by default and does not require Git.
+
 ## Quick Start
 
-### Option 1: Run With Git
+### Option 1: One-command macOS Runner
+
+Use this option for a fresh Mac when you want to avoid `git clone` and Apple Command Line Tools setup.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/chyin1006/SDMon/main/scripts/run-sdmon-macos.sh -o run-sdmon-macos.sh
+chmod +x run-sdmon-macos.sh
+./run-sdmon-macos.sh
+```
+
+The runner downloads the current SDMon ZIP archive, extracts it to a temporary directory, runs `sdmon-v2.sh`, opens `report.html` when possible, and prints generated report paths. If automatic opening fails, it prints the report path for manual review.
+
+Optional Git mode:
+
+```bash
+./run-sdmon-macos.sh --git
+```
+
+Git mode requires Git. On a fresh Mac, install Apple Command Line Tools first with `xcode-select --install`.
+
+### Option 2: Run With Git
 
 ```bash
 git clone https://github.com/chyin1006/SDMon.git
@@ -59,7 +81,7 @@ chmod +x sdmon-v2.sh
 ./sdmon-v2.sh
 ```
 
-### Option 2: Run From GitHub ZIP
+### Option 3: Run From GitHub ZIP
 
 Use this option if Git is not installed yet.
 
